@@ -342,6 +342,106 @@ TOPICS = [
     ]),
 ]
 
+
+# --------------------------------------------------------------------------
+# Where the story is.  This is the region the finding concerns, not the region
+# the wire was read from — a Japanese outlet reporting on the Amazon files
+# under Latin America.  A story with global scope files under Global, and one
+# can carry several: a study spanning Africa and South Asia files under both.
+# --------------------------------------------------------------------------
+GEO = [
+    ("africa", "Africa", [
+        ("africa*", None), ("sahel", None), ("congo basin", None), ("nigeria*", None),
+        ("kenya*", None), ("ethiopia*", None), ("democratic republic of congo", None),
+        ("drc", None), ("ghana", None), ("tanzania*", None), ("uganda*", None),
+        ("south africa*", None), ("zimbabwe*", None), ("zambia*", None), ("mozambique", None),
+        ("angola*", None), ("senegal", None), ("mali", ["africa", "sahel", "bamako", "drought"]),
+        ("chad", ["lake", "africa", "sahel", "basin"]), ("sudan*", None), ("somalia*", None),
+        ("madagascar", None), ("cameroon", None), ("côte d'ivoire", None), ("ivory coast", None),
+        ("botswana", None), ("namibia", None), ("malawi", None), ("rwanda", None),
+        ("okavango", None), ("lake victoria", None), ("serengeti", None), ("kalahari", None),
+        ("horn of africa", None), ("afrique", None), ("áfrica", None), ("afrika", None),
+        ("非洲", None), ("アフリカ", None), ("африк*", None), ("أفريقيا", None), ("अफ्रीका", None),
+    ]),
+    ("mena", "Middle East & North Africa", [
+        ("middle east*", None), ("egypt*", None), ("morocco", None), ("algeria*", None),
+        ("tunisia*", None), ("libya*", None), ("saudi arabia", None), ("emirates", None),
+        ("qatar", None), ("kuwait", None), ("oman", None), ("yemen*", None), ("iraq*", None),
+        ("iran*", None), ("israel*", None), ("palestin*", None), ("gaza", None), ("jordan", None),
+        ("lebanon", None), ("syria*", None), ("turkey", ["drought", "climate", "pollution", "earthquake", "istanbul", "anatolia"]),
+        ("türkiye", None), ("persian gulf", None), ("red sea", None), ("euphrates", None),
+        ("tigris", None), ("dead sea", None), ("sahara", None), ("الشرق الأوسط", None),
+        ("中东", None), ("北アフリカ", None),
+    ]),
+    ("asia", "Asia", [
+        ("asia*", None), ("china", None), ("chinese", ["government", "province", "coal", "emissions", "cities"]),
+        ("japan*", None), ("korea*", None), ("india", None), ("indian", ["ocean", "government", "farmers", "cities", "monsoon", "state"]),
+        ("pakistan*", None), ("bangladesh*", None), ("nepal*", None), ("sri lanka", None),
+        ("indonesia*", None), ("vietnam*", None), ("thailand", None), ("philippines", None),
+        ("malaysia*", None), ("myanmar", None), ("cambodia*", None), ("laos", None),
+        ("mongolia*", None), ("kazakhstan", None), ("uzbekistan", None), ("central asia", None),
+        ("himalaya*", None), ("mekong", None), ("ganges", None), ("yangtze", None),
+        ("brahmaputra", None), ("tibet*", None), ("borneo", None), ("sumatra", None),
+        ("aral sea", None), ("gobi", None), ("siberia*", None), ("アジア", None), ("亚洲", None),
+        ("아시아", None), ("एशिया", None), ("азия", None),
+    ]),
+    ("europe", "Europe", [
+        ("europe*", ["union", "countries", "climate", "commission", "continent", "wide", "study", "across"]),
+        ("european union", None), ("european commission", None), ("brussels", None),
+        ("eu", ["deforestation", "regulation", "law", "directive", "commission", "member states",
+                "emissions", "green deal", "farm", "policy", "ban", "target"]),
+        ("united kingdom", None), ("britain", None), ("england", None),
+        ("scotland", None), ("wales", ["climate", "flood", "farm", "coast"]), ("ireland", None),
+        ("france", None), ("germany", None), ("spain", None), ("portugal", None), ("italy", None),
+        ("greece", None), ("netherlands", None), ("belgium", None), ("poland", None),
+        ("ukraine", None), ("russia*", None), ("sweden", None), ("norway", None), ("finland", None),
+        ("denmark", None), ("switzerland", None), ("austria", None), ("romania", None),
+        ("hungary", None), ("czech*", None), ("balkans", None), ("danube", None), ("alps", None),
+        ("mediterranean", None), ("baltic", None), ("北欧", None), ("欧洲", None), ("ヨーロッパ", None),
+        ("유럽", None), ("европ*", None), ("أوروبا", None),
+    ]),
+    ("latam", "Latin America & Caribbean", [
+        ("latin america*", None), ("south america*", None), ("central america*", None),
+        ("brazil*", None), ("brasil", None), ("amazon", None), ("amazônia", None), ("amazonía", None),
+        ("argentina", None), ("chile", None), ("peru", None), ("colombia*", None),
+        ("venezuela*", None), ("ecuador", None), ("bolivia*", None), ("paraguay", None),
+        ("uruguay", None), ("mexico", None), ("méxico", None), ("guatemala", None),
+        ("honduras", None), ("nicaragua", None), ("costa rica", None), ("panama", None),
+        ("cuba", None), ("haiti", None), ("dominican republic", None), ("caribbean", None),
+        ("patagonia", None), ("andes", None), ("cerrado", None), ("pantanal", None),
+        ("gran chaco", None), ("orinoco", None), ("américa latina", None), ("拉丁美洲", None),
+        ("ラテンアメリカ", None), ("латинская америка", None),
+    ]),
+    ("northam", "North America", [
+        ("united states", None), ("u.s.", None), ("usa", None), ("american", ["government", "cities", "states", "west", "farmers", "midwest", "coast"]),
+        ("canada", None), ("canadian", None), ("alaska*", None), ("california", None),
+        ("texas", None), ("florida", None), ("great lakes", None), ("colorado river", None),
+        ("mississippi", None), ("appalachia*", None), ("quebec", None), ("ontario", None),
+        ("british columbia", None), ("gulf of mexico", None), ("états-unis", None),
+        ("estados unidos", None), ("美国", None), ("加拿大", None), ("アメリカ合衆国", None),
+        ("미국", None), ("сша", None),
+    ]),
+    ("oceania", "Oceania", [
+        ("australia*", None), ("new zealand", None), ("aotearoa", None), ("papua", None),
+        ("pacific island*", None), ("fiji", None), ("samoa", None), ("tonga", None),
+        ("vanuatu", None), ("solomon islands", None), ("kiribati", None), ("tuvalu", None),
+        ("great barrier reef", None), ("tasmania*", None), ("murray-darling", None),
+        ("オセアニア", None), ("大洋洲", None), ("océanie", None),
+    ]),
+    ("polar", "Arctic & Antarctic", [
+        ("arctic", None), ("antarctic*", None), ("greenland", None), ("svalbard", None),
+        ("north pole", None), ("south pole", None), ("tundra", None), ("北極", None),
+        ("南極", None), ("арктик*", None), ("antártic*", None), ("arctique", None),
+    ]),
+    ("ocean", "Oceans & high seas", [
+        ("pacific ocean", None), ("atlantic ocean", None), ("indian ocean", None),
+        ("southern ocean", None), ("high seas", None), ("open ocean", None),
+        ("coral triangle", None), ("mariana", None), ("deep sea", None), ("north sea", None),
+        ("bering sea", None), ("south china sea", None), ("océan pacifique", None),
+        ("公海", None), ("深海", None),
+    ]),
+]
+
 # --------------------------------------------------------------------------
 # The gate.
 #
@@ -479,6 +579,8 @@ FINDING_C = _compile_all(FINDING)
 BLOCK_C = _compile_all(BLOCK)
 TOPICS_C = [(tid, label, [(_compile(t), _compile_all(g) if g else None) for t, g in terms])
             for tid, label, terms in TOPICS]
+GEO_C = [(gid, label, [(_compile(t), _compile_all(g) if g else None) for t, g in terms])
+         for gid, label, terms in GEO]
 
 
 def magnitude(text):
@@ -508,6 +610,21 @@ def score(text):
         total += 1
         reasons.append("finding")
     return total, reasons
+
+
+def regions_for(text, global_scope):
+    """Which parts of the world the finding concerns. Global scope counts as a
+    region of its own, so a planetary study is findable without guessing where."""
+    hits = ["global"] if global_scope else []
+    for gid, _label, terms in GEO_C:
+        for term, guards in terms:
+            if not hit(text, [term]):
+                continue
+            if guards and not hit(text, guards):
+                continue
+            hits.append(gid)
+            break
+    return hits or ["unlocated"]
 
 
 def topics_for(text):
@@ -596,6 +713,7 @@ def run(dry_run=False, fixtures=None):
                 row["x"] = topics_for(text) or ["climate"]
                 row["p"] = total
                 row["y"] = reasons
+                row["w"] = regions_for(text, "global" in reasons)
                 if absorb(row):
                     stat["kept"] += 1
         stats.append(stat)
@@ -635,6 +753,9 @@ def run(dry_run=False, fixtures=None):
         "languages": languages,
         "regions": regions,
         "topics": [{"id": tid, "label": label} for tid, label, _ in TOPICS],
+        "geo": ([{"id": "global", "label": "Global"}] +
+                [{"id": gid, "label": label} for gid, label, _ in GEO] +
+                [{"id": "unlocated", "label": "Unplaced"}]),
         "sources": stats,
         "items": items,
     }

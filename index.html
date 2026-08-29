@@ -70,11 +70,11 @@
 .ef-progress { height: 2px; background: rgba(255,255,255,0.06); }
 .ef-progress-fill { height: 100%; width: 0; background: var(--accent); transition: width 0.35s ease; }
 
-.ef-filters { flex: 0 0 auto; display: flex; flex-direction: column; gap: 0.26rem; padding: 0.4rem 0.9rem; border-bottom: 1px solid var(--line-soft); }
+.ef-filters { flex: 0 0 auto; display: flex; flex-direction: column; gap: 0.2rem; padding: 0.35rem 0.9rem; border-bottom: 1px solid var(--line-soft); }
 .ef-row { display: flex; align-items: center; gap: 0.35rem; flex-wrap: nowrap; overflow-x: auto; overflow-y: hidden; scrollbar-width: none; padding-bottom: 1px; }
 .ef-row::-webkit-scrollbar { height: 0; }
 .ef-key { position: sticky; left: 0; z-index: 1; flex: 0 0 auto; font-size: 0.53rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-faint); background: linear-gradient(90deg, #0a0f1c 72%, transparent); padding-right: 0.4rem; min-width: 62px; }
-.ef-chip { flex: 0 0 auto; font-family: inherit; font-size: 0.64rem; color: var(--ink-dim); background: rgba(255,255,255,0.03); border: 1px solid var(--line-soft); border-radius: 999px; padding: 0.2rem 0.6rem; cursor: pointer; white-space: nowrap; }
+.ef-chip { flex: 0 0 auto; font-family: inherit; font-size: 0.62rem; color: var(--ink-dim); background: rgba(255,255,255,0.03); border: 1px solid var(--line-soft); border-radius: 999px; padding: 0.15rem 0.55rem; cursor: pointer; white-space: nowrap; }
 .ef-chip:hover { color: var(--ink); border-color: rgba(255,255,255,0.22); }
 .ef-chip.on { color: #08111f; background: var(--chipcolor, #e8eef7); border-color: transparent; font-weight: 500; }
 .ef-chip .ef-n { opacity: 0.6; margin-left: 0.3rem; font-variant-numeric: tabular-nums; }
@@ -138,8 +138,7 @@
         <p class="ef-lede">
             <strong>Environmental destruction worldwide, at scale, in 25 languages.</strong>
             Only findings that reach past the local: a global or basin-wide scope, a magnitude, a mechanism,
-            or a human consequence. Every story carries the scale that earned it a place, and the strongest
-            are marked. Water bugs in one river do not appear here.
+            or a human consequence.
         </p>
     </header>
 
@@ -156,7 +155,8 @@
 
         <div class="ef-filters">
             <div class="ef-row" id="efTopicRow"><span class="ef-key">Subject</span></div>
-            <div class="ef-row" id="efRegionRow"><span class="ef-key">Source</span></div>
+            <div class="ef-row" id="efGeoRow"><span class="ef-key">Region</span></div>
+            <div class="ef-row" id="efRegionRow"><span class="ef-key">Wire</span></div>
             <div class="ef-row" id="efLangRow"><span class="ef-key">Language</span></div>
             <div class="ef-row" id="efWhenRow"><span class="ef-key">Window</span></div>
             <div class="ef-row" id="efScaleRow"><span class="ef-key">Scale</span></div>
@@ -189,6 +189,13 @@
             bird sighting: all scored and all dropped. What survives is the finding at scale — freshwater species
             down 85% since 1970 and the food supply that depends on them, air pollution and its eight million
             deaths a year, coral bleaching across 84% of the world's reefs.
+        </p>
+        <p class="ef-note">
+            <strong>Region.</strong> Each story is placed by the ground it concerns, not the wire it arrived
+            on: a Japanese outlet reporting on the Amazon files under Latin America. A finding with global
+            scope files under <em>Global</em>, and one story can carry several regions — a study spanning
+            Africa and South Asia appears under both. Stories naming no place at all sit under
+            <em>Unplaced</em> rather than being guessed at.
         </p>
         <p class="ef-note">
             <strong>Limits worth knowing.</strong> Scoring is mechanical: it reads words, not meaning, so an
@@ -256,8 +263,8 @@ const SCALES = [
 ];
 
 const state = { items: [], topics: [], languages: {}, regions: [], sources: [], generated: null,
-                bigScore: 4, topic: 'all', region: 'all', langs: new Set(), when: 'all',
-                scale: 'all', query: '', shown: 50, loading: false };
+                geo: [], bigScore: 4, topic: 'all', region: 'all', place: 'all',
+                langs: new Set(), when: 'all', scale: 'all', query: '', shown: 50, loading: false };
 
 const $list = document.getElementById('efList');
 const $status = document.getElementById('efStatus');
@@ -265,6 +272,7 @@ const $dot = document.getElementById('efDot');
 const $prog = document.getElementById('efProgress');
 const $topicRow = document.getElementById('efTopicRow');
 const $regionRow = document.getElementById('efRegionRow');
+const $geoRow = document.getElementById('efGeoRow');
 const $langRow = document.getElementById('efLangRow');
 const $whenRow = document.getElementById('efWhenRow');
 const $scaleRow = document.getElementById('efScaleRow');
@@ -287,6 +295,14 @@ function timeAgo(ts) {
     return d < 30 ? d + 'd ago' : new Date(ts).toISOString().slice(0, 10);
 }
 function langName(c) { return state.languages[c] || c; }
+function placeLabel(places) {
+    const named = places.filter(p => p !== 'unlocated');
+    if (!named.length) return 'unplaced';
+    return named.map(p => {
+        const g = state.geo.find(g => g.id === p);
+        return g ? g.label : p;
+    }).slice(0, 3).join(' · ');
+}
 function topicLabel(id) { const t = state.topics.find(t => t.id === id); return t ? t.label : id; }
 function setStatus(text, cls) { $status.textContent = text; $dot.className = 'ef-dot' + (cls ? ' ' + cls : ''); }
 
@@ -314,12 +330,13 @@ async function load() {
     state.items = data.items.map(i => ({
         title: i.t, link: i.u, outlet: i.o, lang: i.g, region: i.r,
         kind: i.k, ts: i.d, snippet: i.s, topics: i.x || ['climate'],
-        score: i.p || 0, why: i.y || []
+        score: i.p || 0, why: i.y || [], places: i.w || ['unlocated']
     }));
     state.bigScore = data.big_picture_score || 4;
     state.topics = data.topics || [];
     state.languages = data.languages || {};
     state.regions = data.regions || [];
+    state.geo = data.geo || [];
     state.sources = data.sources || [];
     state.generated = data.generated ? Date.parse(data.generated) : null;
 
@@ -354,6 +371,7 @@ function visible() {
     return state.items.filter(i => {
         if (state.topic !== 'all' && i.topics.indexOf(state.topic) === -1) return false;
         if (state.region !== 'all' && i.region !== state.region) return false;
+        if (state.place !== 'all' && i.places.indexOf(state.place) === -1) return false;
         if (state.langs.size && !state.langs.has(i.lang)) return false;
         if (!withinWindow(i)) return false;
         if (state.scale === 'big' && i.score < state.bigScore) return false;
@@ -384,7 +402,8 @@ function render() {
                 '</span>';
             return '<a class="ef-item' + (big ? ' watch' : '') + '" href="' + esc(i.link) + '" target="_blank" rel="noopener noreferrer">' +
                 '<div class="ef-meta"><span class="ef-lang">' + esc(langName(i.lang)) + '</span>' +
-                '<span>' + esc(i.outlet) + '</span><span>' + esc(i.region) + '</span>' +
+                '<span>' + esc(i.outlet) + '</span>' +
+                '<span>' + esc(placeLabel(i.places)) + '</span>' +
                 pips + (i.why.length ? '<span class="ef-why">' + esc(i.why.join(' · ')) + '</span>' : '') +
                 '<span>' + timeAgo(i.ts) + '</span></div>' +
                 '<div class="ef-item-title">' + esc(i.title) + '</div>' +
@@ -410,10 +429,17 @@ function chip(row, key, value, label, color) {
 }
 
 function buildChips() {
-    [$topicRow, $regionRow, $langRow, $whenRow, $scaleRow].forEach(r => r.querySelectorAll('.ef-chip').forEach(c => c.remove()));
+    [$topicRow, $geoRow, $regionRow, $langRow, $whenRow, $scaleRow].forEach(r => r.querySelectorAll('.ef-chip').forEach(c => c.remove()));
 
     chip($topicRow, 'topic', 'all', 'All').classList.add('on');
     state.topics.forEach(t => chip($topicRow, 'topic', t.id, t.label, TOPIC_COLOR[t.id]));
+
+    chip($geoRow, 'place', 'all', 'Everywhere').classList.add('on');
+    state.geo.forEach(g => {
+        const c = chip($geoRow, 'place', g.id, g.label);
+        if (g.id === 'global') c.style.setProperty('--chipcolor', '#6fe0b8');
+        if (g.id === state.place) c.classList.add('on');
+    });
 
     chip($regionRow, 'region', 'all', 'All').classList.add('on');
     state.regions.forEach(r => chip($regionRow, 'region', r, r));
@@ -441,6 +467,12 @@ function chipCounts() {
         const n = id === 'all' ? base.length : base.filter(i => i.topics.indexOf(id) !== -1).length;
         c.querySelector('.ef-n').textContent = n;
         c.classList.toggle('empty', n === 0 && id !== 'all');
+    });
+    $geoRow.querySelectorAll('.ef-chip').forEach(c => {
+        const g = c.dataset.place;
+        const n = g === 'all' ? base.length : base.filter(i => i.places.indexOf(g) !== -1).length;
+        c.querySelector('.ef-n').textContent = n;
+        c.classList.toggle('empty', n === 0 && g !== 'all');
     });
     $regionRow.querySelectorAll('.ef-chip').forEach(c => {
         const r = c.dataset.region;
@@ -484,6 +516,7 @@ function single(row, key) {
 }
 single($topicRow, 'topic');
 single($regionRow, 'region');
+single($geoRow, 'place');
 single($whenRow, 'when');
 single($scaleRow, 'scale');
 
@@ -497,10 +530,11 @@ $langRow.addEventListener('click', e => {
 
 $refresh.addEventListener('click', load);
 document.getElementById('efClear').addEventListener('click', () => {
-    state.topic = 'all'; state.region = 'all'; state.langs.clear(); state.when = 'all';
+    state.topic = 'all'; state.region = 'all'; state.place = 'all'; state.langs.clear(); state.when = 'all';
     state.scale = 'all'; state.query = ''; state.shown = 50; $search.value = '';
     $topicRow.querySelectorAll('.ef-chip').forEach(c => c.classList.toggle('on', c.dataset.topic === 'all'));
     $regionRow.querySelectorAll('.ef-chip').forEach(c => c.classList.toggle('on', c.dataset.region === 'all'));
+    $geoRow.querySelectorAll('.ef-chip').forEach(c => c.classList.toggle('on', c.dataset.place === 'all'));
     $langRow.querySelectorAll('.ef-chip').forEach(c => c.classList.remove('on'));
     $whenRow.querySelectorAll('.ef-chip').forEach(c => c.classList.toggle('on', c.dataset.when === 'all'));
     $scaleRow.querySelectorAll('.ef-chip').forEach(c => c.classList.toggle('on', c.dataset.scale === 'all'));
