@@ -10,9 +10,9 @@ only — no dependencies, no API keys, no model calls.
 The distinguishing feature of this feed is a scale score. An environmental story
 is not kept because it is about the environment; it is kept because it carries a
 finding at scale — a global or basin-wide scope, a magnitude, a systemic
-mechanism, or a human consequence. A survey of water bugs in one Angolan river
-scores nothing and never appears. "Freshwater species have declined 85% since
-1970, threatening food supplies for 200 million people" scores on all four.
+mechanism, or a human consequence. A single-site population survey scores nothing
+and never appears. "Freshwater species have declined 85% since 1970, threatening
+food supplies for 200 million people" scores on all four.
 
     python3 harvest_env.py
     python3 harvest_env.py --dry-run
@@ -613,9 +613,10 @@ def score(text):
 
 
 def regions_for(text, global_scope):
-    """Which parts of the world the finding concerns. Global scope counts as a
-    region of its own, so a planetary study is findable without guessing where."""
-    hits = ["global"] if global_scope else []
+    """Which parts of the world the finding concerns.  A worldwide finding that
+    names no particular place falls to `unlocated` rather than being guessed at;
+    its global reach is already recorded in the score reasons."""
+    hits = []
     for gid, _label, terms in GEO_C:
         for term, guards in terms:
             if not hit(text, [term]):
@@ -647,11 +648,13 @@ def load_sources():
     for s in cfg.get("direct", []):
         srcs.append({"name": s["name"], "lang": s["lang"], "region": s["region"],
                      "kind": s.get("kind", "news"), "url": s["url"]})
-    for block, prefix, kind in (("gnews", "Google News · ", "news"),
-                                ("scope", "Planet scale · ", "scope")):
+    # The wire's own group is provenance, never geography — where a story
+    # happens is decided by the gazetteer, not by which edition carried it.
+    for block, prefix, group, kind in (("gnews", "Google News · ", "Regional press", "news"),
+                                       ("scope", "Planet scale · ", "Planet scale", "scope")):
         for loc in cfg.get(block, []):
             srcs.append({"name": prefix + loc["label"], "lang": loc["lang"],
-                         "region": loc["region"], "kind": kind,
+                         "region": group, "kind": kind,
                          "url": build_gnews_url(loc)})
     return srcs, cfg
 
@@ -753,9 +756,8 @@ def run(dry_run=False, fixtures=None):
         "languages": languages,
         "regions": regions,
         "topics": [{"id": tid, "label": label} for tid, label, _ in TOPICS],
-        "geo": ([{"id": "global", "label": "Global"}] +
-                [{"id": gid, "label": label} for gid, label, _ in GEO] +
-                [{"id": "unlocated", "label": "Unplaced"}]),
+        "geo": ([{"id": gid, "label": label} for gid, label, _ in GEO] +
+                [{"id": "unlocated", "label": "No single region"}]),
         "sources": stats,
         "items": items,
     }

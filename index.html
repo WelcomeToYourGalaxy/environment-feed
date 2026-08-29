@@ -159,7 +159,6 @@
             <div class="ef-row" id="efRegionRow"><span class="ef-key">Wire</span></div>
             <div class="ef-row" id="efLangRow"><span class="ef-key">Language</span></div>
             <div class="ef-row" id="efWhenRow"><span class="ef-key">Window</span></div>
-            <div class="ef-row" id="efScaleRow"><span class="ef-key">Scale</span></div>
         </div>
 
         <div class="ef-list" id="efList"><div class="ef-state">Loading the wire…</div></div>
@@ -192,9 +191,16 @@
         <p class="ef-note">
             <strong>Region.</strong> Each story is placed by the ground it concerns, not the wire it arrived
             on: a Japanese outlet reporting on the Amazon files under Latin America. A finding with global
-            scope files under <em>Global</em>, and one story can carry several regions — a study spanning
-            Africa and South Asia appears under both. Stories naming no place at all sit under
-            <em>Unplaced</em> rather than being guessed at.
+            scope, and one story can carry several regions — a study spanning Africa and South Asia appears
+            under both. A worldwide finding that names no particular country, and anything else naming no
+            place at all, sits under <em>No single region</em> rather than being assigned one it does not have.
+            The <em>Wire</em> row beside it filters by where the story was read from, which is a different
+            question: analysis desks, field press, journals, institutions, regional press, planet-scale searches.
+        </p>
+        <p class="ef-note">
+            <strong>Window.</strong> The wire keeps 45 days. The last 24 hours, 7 days and 30 days each have
+            their own view, and <em>Older than 30 days</em> shows only what has aged past a month — it appears
+            once there is anything in it.
         </p>
         <p class="ef-note">
             <strong>Limits worth knowing.</strong> Scoring is mechanical: it reads words, not meaning, so an
@@ -252,18 +258,14 @@ const WINDOWS = [
     { id: 'd1', label: '24 hours', ms: 864e5 },
     { id: 'd7', label: '7 days', ms: 7 * 864e5 },
     { id: 'd30', label: '30 days', ms: 30 * 864e5 },
+    // the wire keeps 45 days, so anything past a month is reachable on its own
+    { id: 'older', label: 'Older than 30 days', ms: 30 * 864e5, older: true },
     { id: 'all', label: 'Everything', ms: null }
-];
-
-const SCALES = [
-    { id: 'all', label: 'Everything kept' },
-    { id: 'big', label: 'Big picture only' },
-    { id: 'sort', label: 'Sort by scale' }
 ];
 
 const state = { items: [], topics: [], languages: {}, regions: [], sources: [], generated: null,
                 geo: [], bigScore: 4, topic: 'all', region: 'all', place: 'all',
-                langs: new Set(), when: 'all', scale: 'all', query: '', shown: 50, loading: false };
+                langs: new Set(), when: 'all', query: '', shown: 50, loading: false };
 
 const $list = document.getElementById('efList');
 const $status = document.getElementById('efStatus');
@@ -274,7 +276,6 @@ const $regionRow = document.getElementById('efRegionRow');
 const $geoRow = document.getElementById('efGeoRow');
 const $langRow = document.getElementById('efLangRow');
 const $whenRow = document.getElementById('efWhenRow');
-const $scaleRow = document.getElementById('efScaleRow');
 const $search = document.getElementById('efSearch');
 const $srcGrid = document.getElementById('efSrcGrid');
 const $refresh = document.getElementById('efRefresh');
@@ -358,11 +359,12 @@ async function load() {
     render();
 }
 
-function withinWindow(i) {
-    const w = WINDOWS.find(w => w.id === state.when);
+function withinWindow(i, win) {
+    const w = WINDOWS.find(w => w.id === (win || state.when));
     if (!w || !w.ms) return true;
     if (!i.ts) return false;
-    return (Date.now() - i.ts) <= w.ms;
+    const age = Date.now() - i.ts;
+    return w.older ? age > w.ms : age <= w.ms;
 }
 
 function visible() {
@@ -373,12 +375,9 @@ function visible() {
         if (state.place !== 'all' && i.places.indexOf(state.place) === -1) return false;
         if (state.langs.size && !state.langs.has(i.lang)) return false;
         if (!withinWindow(i)) return false;
-        if (state.scale === 'big' && i.score < state.bigScore) return false;
         if (q && (i.title + ' ' + i.snippet + ' ' + i.outlet).toLowerCase().indexOf(q) === -1) return false;
         return true;
-    }).sort(state.scale === 'sort'
-        ? (a, b) => (b.score - a.score) || ((b.ts || 0) - (a.ts || 0))
-        : (a, b) => (b.ts || 0) - (a.ts || 0));
+    }).sort((a, b) => (b.ts || 0) - (a.ts || 0));
 }
 
 function render() {
@@ -428,7 +427,7 @@ function chip(row, key, value, label, color) {
 }
 
 function buildChips() {
-    [$topicRow, $geoRow, $regionRow, $langRow, $whenRow, $scaleRow].forEach(r => r.querySelectorAll('.ef-chip').forEach(c => c.remove()));
+    [$topicRow, $geoRow, $regionRow, $langRow, $whenRow].forEach(r => r.querySelectorAll('.ef-chip').forEach(c => c.remove()));
 
     chip($topicRow, 'topic', 'all', 'All').classList.add('on');
     state.topics.forEach(t => chip($topicRow, 'topic', t.id, t.label, TOPIC_COLOR[t.id]));
@@ -436,7 +435,6 @@ function buildChips() {
     chip($geoRow, 'place', 'all', 'Everywhere').classList.add('on');
     state.geo.forEach(g => {
         const c = chip($geoRow, 'place', g.id, g.label);
-        if (g.id === 'global') c.style.setProperty('--chipcolor', '#6fe0b8');
         if (g.id === state.place) c.classList.add('on');
     });
 
@@ -451,10 +449,6 @@ function buildChips() {
         if (w.id === state.when) c.classList.add('on');
     });
 
-    SCALES.forEach(sc => {
-        const c = chip($scaleRow, 'scale', sc.id, sc.label);
-        if (sc.id === state.scale) c.classList.add('on');
-    });
 }
 
 function chipCounts() {
@@ -485,15 +479,10 @@ function chipCounts() {
         c.classList.toggle('empty', n === 0);
     });
     $whenRow.querySelectorAll('.ef-chip').forEach(c => {
-        const w = WINDOWS.find(w => w.id === c.dataset.when);
-        const n = state.items.filter(i => !w.ms ? true : (i.ts && (Date.now() - i.ts) <= w.ms)).length;
+        const n = state.items.filter(i => withinWindow(i, c.dataset.when)).length;
         c.querySelector('.ef-n').textContent = n;
-    });
-    $scaleRow.querySelectorAll('.ef-chip').forEach(c => {
-        const id = c.dataset.scale;
-        c.querySelector('.ef-n').textContent =
-            id === 'big' ? base.filter(i => i.score >= state.bigScore).length
-            : id === 'all' ? base.length : '';
+        // the archive chip only appears once there is an archive
+        if (c.dataset.when === 'older') c.style.display = n ? '' : 'none';
     });
 }
 
@@ -517,7 +506,6 @@ single($topicRow, 'topic');
 single($regionRow, 'region');
 single($geoRow, 'place');
 single($whenRow, 'when');
-single($scaleRow, 'scale');
 
 $langRow.addEventListener('click', e => {
     const c = e.target.closest('.ef-chip'); if (!c) return;
@@ -530,13 +518,12 @@ $langRow.addEventListener('click', e => {
 $refresh.addEventListener('click', load);
 document.getElementById('efClear').addEventListener('click', () => {
     state.topic = 'all'; state.region = 'all'; state.place = 'all'; state.langs.clear(); state.when = 'all';
-    state.scale = 'all'; state.query = ''; state.shown = 50; $search.value = '';
+    state.query = ''; state.shown = 50; $search.value = '';
     $topicRow.querySelectorAll('.ef-chip').forEach(c => c.classList.toggle('on', c.dataset.topic === 'all'));
     $regionRow.querySelectorAll('.ef-chip').forEach(c => c.classList.toggle('on', c.dataset.region === 'all'));
     $geoRow.querySelectorAll('.ef-chip').forEach(c => c.classList.toggle('on', c.dataset.place === 'all'));
     $langRow.querySelectorAll('.ef-chip').forEach(c => c.classList.remove('on'));
     $whenRow.querySelectorAll('.ef-chip').forEach(c => c.classList.toggle('on', c.dataset.when === 'all'));
-    $scaleRow.querySelectorAll('.ef-chip').forEach(c => c.classList.toggle('on', c.dataset.scale === 'all'));
     render();
 });
 let timer;
