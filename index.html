@@ -80,6 +80,14 @@
 .ef-chip .ef-n { opacity: 0.6; margin-left: 0.3rem; font-variant-numeric: tabular-nums; }
 .ef-chip.empty { opacity: 0.4; }
 
+.ef-tr { display: flex; align-items: center; gap: 0.3rem; flex: 0 0 auto; }
+.ef-tr select { font-family: inherit; font-size: 0.62rem; color: var(--ink);
+    background: rgba(255,255,255,0.05); border: 1px solid var(--line); border-radius: 999px;
+    padding: 0.26rem 0.5rem; cursor: pointer; max-width: 150px; }
+.ef-tr select:focus { outline: none; border-color: rgba(255,255,255,0.28); }
+.ef-mt { color: var(--ink-faint); border: 1px solid var(--line-soft); border-radius: 999px;
+    padding: 0.02rem 0.38rem; letter-spacing: 0.1em; }
+.ef-orig { color: var(--ink-faint); text-decoration: underline; text-underline-offset: 2px; }
 .ef-list { flex: 1 1 auto; min-height: 130px; overflow-y: auto; scrollbar-width: thin; overscroll-behavior: contain; }
 .ef-item { display: block; padding: 0.55rem 0.9rem; border-bottom: 1px solid var(--line-soft); text-decoration: none; color: inherit; }
 .ef-item:last-child { border-bottom: 0; }
@@ -148,6 +156,7 @@
             <div class="ef-tools">
                 <input class="ef-search" id="efSearch" type="search" placeholder="PFAS, tipping point, deforestation, deaths…" aria-label="Filter headlines">
                 <button class="ef-btn" id="efClear">Clear</button>
+                <span class="ef-tr"><label for="efTr" class="ef-key" style="min-width:0">Translate</label><select id="efTr" aria-label="Translate the feed"></select></span>
                 <button class="ef-btn" id="efRefresh">Refresh</button>
             </div>
         </div>
@@ -201,6 +210,14 @@
             <strong>Window.</strong> The wire keeps 45 days. The last 24 hours, 7 days and 30 days each have
             their own view, and <em>Older than 30 days</em> shows only what has aged past a month — it appears
             once there is anything in it.
+        </p>
+        <p class="ef-note">
+            <strong>Translation.</strong> The <em>Translate</em> control at the top renders the headlines and
+            snippets on screen into any of 26 languages, through a free public translation endpoint — no account,
+            no key, nothing stored. A translated row is marked as machine translation and keeps the publisher's
+            original wording on hover, because a machine rendering is not the publisher's words. If the endpoint
+            is unavailable the row simply stays in its original language rather than emptying. Translation
+            applies to what is on screen; scroll further or widen a filter and press the control again.
         </p>
         <p class="ef-note">
             <strong>Limits worth knowing.</strong> Scoring is mechanical: it reads words, not meaning, so an
@@ -263,7 +280,101 @@ const WINDOWS = [
     { id: 'all', label: 'Everything', ms: null }
 ];
 
-const state = { items: [], topics: [], languages: {}, regions: [], sources: [], generated: null,
+/* ============================================================
+   Translation. Two independent things, because one of them can
+   fail and the other cannot:
+
+   1. In-place machine translation of the headlines and snippets
+      you are looking at, through a free public endpoint. No key,
+      no account. If it is unavailable the row falls back to the
+      original text and says so rather than showing nothing.
+   2. A per-row link that opens the article itself translated,
+      which is a plain URL and works even when (1) does not.
+
+   Machine translation is never presented as the publisher's own
+   words: a translated row is marked, and the original title is
+   kept on hover.
+   ============================================================ */
+const TR_LANGS = [
+    ['off', 'Off — original'], ['en', 'English'], ['es', 'Español'], ['pt', 'Português'],
+    ['fr', 'Français'], ['de', 'Deutsch'], ['it', 'Italiano'], ['nl', 'Nederlands'],
+    ['sv', 'Svenska'], ['pl', 'Polski'], ['el', 'Ελληνικά'], ['ru', 'Русский'],
+    ['uk', 'Українська'], ['tr', 'Türkçe'], ['ar', 'العربية'], ['he', 'עברית'],
+    ['fa', 'فارسی'], ['hi', 'हिन्दी'], ['bn', 'বাংলা'], ['id', 'Bahasa Indonesia'],
+    ['vi', 'Tiếng Việt'], ['th', 'ไทย'], ['ja', '日本語'], ['zh-CN', '简体中文'],
+    ['zh-TW', '繁體中文'], ['ko', '한국어'], ['sw', 'Kiswahili']
+];
+const trCache = new Map();        // key: lang + '\u0000' + text
+let trPending = false;
+
+function trKey(lang, text) { return lang + '\u0000' + text; }
+
+async function trOne(text, lang) {
+    const endpoints = [
+        () => 'https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=' +
+              lang + '&dt=t&q=' + encodeURIComponent(text),
+        () => 'https://api.mymemory.translated.net/get?q=' + encodeURIComponent(text) +
+              '&langpair=autodetect|' + lang
+    ];
+    for (let i = 0; i < endpoints.length; i++) {
+        try {
+            const res = await fetch(endpoints[i]());
+            if (!res.ok) continue;
+            const data = await res.json();
+            if (i === 0 && Array.isArray(data) && Array.isArray(data[0])) {
+                const out = data[0].map(seg => (seg && seg[0]) || '').join('');
+                if (out.trim()) return out;
+            }
+            if (i === 1 && data && data.responseData && data.responseData.translatedText) {
+                return data.responseData.translatedText;
+            }
+        } catch (e) { /* try the next one */ }
+    }
+    return null;
+}
+
+async function trFill(items, lang, onDone) {
+    // only what is on screen, and only what is not already cached
+    const wanted = [];
+    items.forEach(i => {
+        [i.title, i.snippet].forEach(t => {
+            if (t && !trCache.has(trKey(lang, t))) wanted.push(t);
+        });
+    });
+    if (!wanted.length) { onDone(false); return; }
+
+    trPending = true;
+    let changed = false;
+    const queue = wanted.slice(0, 120);
+    async function worker() {
+        while (queue.length) {
+            const text = queue.shift();
+            const out = await trOne(text, lang);
+            trCache.set(trKey(lang, text), out || text);   // fall back to the original
+            changed = true;
+        }
+    }
+    await Promise.all([worker(), worker(), worker(), worker()]);
+    trPending = false;
+    onDone(changed);
+}
+
+function trText(text, lang) {
+    if (!text || lang === 'off') return text;
+    const hit = trCache.get(trKey(lang, text));
+    return hit === undefined ? text : hit;
+}
+
+/* the article itself, translated, as a plain link */
+function trUrl(url, lang) {
+    try {
+        const u = new URL(url);
+        return 'https://translate.google.com/translate?sl=auto&tl=' + lang +
+               '&u=' + encodeURIComponent(u.href);
+    } catch (e) { return url; }
+}
+
+const state = { tl: 'off', items: [], topics: [], languages: {}, regions: [], sources: [], generated: null,
                 geo: [], bigScore: 4, topic: 'all', region: 'all', place: 'all',
                 langs: new Set(), when: 'all', query: '', shown: 50, loading: false };
 
@@ -304,7 +415,10 @@ function placeLabel(places) {
     }).slice(0, 3).join(' · ');
 }
 function topicLabel(id) { const t = state.topics.find(t => t.id === id); return t ? t.label : id; }
-function setStatus(text, cls) { $status.textContent = text; $dot.className = 'ef-dot' + (cls ? ' ' + cls : ''); }
+let lastStatus = '';
+function refreshStatus() { if (lastStatus) $status.textContent = lastStatus; }
+function setStatus(text, cls) { $status.textContent = text;
+    if (text.indexOf('Translating') === -1) lastStatus = text; $dot.className = 'ef-dot' + (cls ? ' ' + cls : ''); }
 
 async function load() {
     if (state.loading) return;
@@ -403,9 +517,11 @@ function render() {
                 '<span>' + esc(i.outlet) + '</span>' +
                 '<span>' + esc(placeLabel(i.places)) + '</span>' +
                 pips + (i.why.length ? '<span class="ef-why">' + esc(i.why.join(' · ')) + '</span>' : '') +
-                '<span>' + timeAgo(i.ts) + '</span></div>' +
-                '<div class="ef-item-title">' + esc(i.title) + '</div>' +
-                (i.snippet ? '<div class="ef-snip">' + esc(i.snippet) + '</div>' : '') +
+                '<span>' + timeAgo(i.ts) + '</span>' +
+                (state.tl !== 'off' ? '<span class="ef-mt">machine translation</span>' : '') +
+                '</div>' +
+                '<div class="ef-item-title"' + (state.tl !== 'off' ? ' title="' + esc(i.title) + '"' : '') + '>' + esc(trText(i.title, state.tl)) + '</div>' +
+                (i.snippet ? '<div class="ef-snip">' + esc(trText(i.snippet, state.tl)) + '</div>' : '') +
                 '<div class="ef-tags">' + tags + '</div></a>';
         }).join('');
         if (items.length > state.shown) {
@@ -441,6 +557,10 @@ function buildChips() {
     chip($regionRow, 'region', 'all', 'All').classList.add('on');
     state.regions.forEach(r => chip($regionRow, 'region', r, r));
 
+    // an explicit All chip: without one the only way back from a single
+    // language was to untick it again
+    const allLang = chip($langRow, 'lang', 'all', 'All languages');
+    if (!state.langs.size) allLang.classList.add('on');
     Object.keys(state.languages).sort((a, b) => langName(a).localeCompare(langName(b)))
         .forEach(code => chip($langRow, 'lang', code, langName(code)));
 
@@ -474,9 +594,10 @@ function chipCounts() {
         c.classList.toggle('empty', n === 0 && r !== 'all');
     });
     $langRow.querySelectorAll('.ef-chip').forEach(c => {
-        const n = base.filter(i => i.lang === c.dataset.lang).length;
+        const code = c.dataset.lang;
+        const n = code === 'all' ? base.length : base.filter(i => i.lang === code).length;
         c.querySelector('.ef-n').textContent = n;
-        c.classList.toggle('empty', n === 0);
+        c.classList.toggle('empty', n === 0 && code !== 'all');
     });
     $whenRow.querySelectorAll('.ef-chip').forEach(c => {
         const n = state.items.filter(i => withinWindow(i, c.dataset.when)).length;
@@ -510,8 +631,16 @@ single($whenRow, 'when');
 $langRow.addEventListener('click', e => {
     const c = e.target.closest('.ef-chip'); if (!c) return;
     const code = c.dataset.lang;
-    if (state.langs.has(code)) state.langs.delete(code); else state.langs.add(code);
-    c.classList.toggle('on', state.langs.has(code));
+    if (code === 'all') {
+        state.langs.clear();
+    } else if (state.langs.has(code)) {
+        state.langs.delete(code);
+    } else {
+        state.langs.add(code);
+    }
+    // All is lit exactly when no single language is picked
+    $langRow.querySelectorAll('.ef-chip').forEach(x => x.classList.toggle('on',
+        x.dataset.lang === 'all' ? !state.langs.size : state.langs.has(x.dataset.lang)));
     state.shown = 50; render();
 });
 
@@ -522,7 +651,7 @@ document.getElementById('efClear').addEventListener('click', () => {
     $topicRow.querySelectorAll('.ef-chip').forEach(c => c.classList.toggle('on', c.dataset.topic === 'all'));
     $regionRow.querySelectorAll('.ef-chip').forEach(c => c.classList.toggle('on', c.dataset.region === 'all'));
     $geoRow.querySelectorAll('.ef-chip').forEach(c => c.classList.toggle('on', c.dataset.place === 'all'));
-    $langRow.querySelectorAll('.ef-chip').forEach(c => c.classList.remove('on'));
+    $langRow.querySelectorAll('.ef-chip').forEach(c => c.classList.toggle('on', c.dataset.lang === 'all'));
     $whenRow.querySelectorAll('.ef-chip').forEach(c => c.classList.toggle('on', c.dataset.when === 'all'));
     render();
 });
@@ -552,6 +681,28 @@ document.addEventListener('keydown', e => {
     document.querySelectorAll('.ef-sheet').forEach(s => s.classList.remove('open'));
     document.querySelectorAll('.ef-tab').forEach(t => t.classList.remove('on'));
 });
+
+
+/* translation control */
+(function () {
+    const sel = document.getElementById('efTr');
+    if (!sel) return;
+    TR_LANGS.forEach(pair => {
+        const o = document.createElement('option');
+        o.value = pair[0]; o.textContent = pair[1];
+        sel.appendChild(o);
+    });
+    sel.value = 'off';
+    sel.addEventListener('change', () => {
+        state.tl = sel.value;
+        state.shown = 50;
+        render();
+        if (state.tl === 'off') { refreshStatus(); return; }
+        const onscreen = visible().slice(0, state.shown);
+        setStatus('Translating ' + onscreen.length + ' headlines…', '');
+        trFill(onscreen, state.tl, () => { render(); refreshStatus(); });
+    });
+})();
 
 load();
 setInterval(() => { if (!document.hidden) load(); }, 15 * 60 * 1000);
