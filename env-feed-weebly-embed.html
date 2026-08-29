@@ -1,0 +1,603 @@
+<!-- ============================================================
+     The Frontline — environmental destruction worldwide · Weebly embed
+     Paste this whole block into a Weebly "Embed Code" element.
+     Nothing is hosted: the feed travels inside this snippet and runs
+     in its own frame. The only runtime fetch is the wire.
+     ============================================================ -->
+<div id="galaxy-envfeed-embed" style="width:100%;margin:0;padding:0;">
+  <iframe id="galaxy-envfeed-frame"
+          title="The Frontline — environmental destruction worldwide"
+          style="width:100%;border:0;display:block;background:#05070e;border-radius:14px;overflow:hidden;"
+          scrolling="no"
+          referrerpolicy="no-referrer-when-downgrade"></iframe>
+</div>
+
+<script type="text/plain" id="galaxy-envfeed-doc">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Frontline — environmental destruction, worldwide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   The Space Front — a monitoring feed.
+   Everything scoped to .ef so it can be embedded anywhere.
+   ============================================================ */
+.ef {
+    --ink: #eef2f8;
+    --ink-dim: #9aa8bd;
+    --ink-faint: #67748a;
+    --line: rgba(255,255,255,0.10);
+    --line-soft: rgba(255,255,255,0.06);
+    --accent: #6fe0b8;     /* green — live dot, title, progress */
+    --flag: #ff6b9d;       /* rose — big-picture marker */
+    --cool: #8fb4ff;
+
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: var(--ink);
+    background:
+        radial-gradient(1100px 520px at 88% -10%, rgba(40,110,120,0.26), transparent 60%),
+        radial-gradient(760px 420px at 4% 4%, rgba(70,60,140,0.20), transparent 58%),
+        linear-gradient(180deg, #05070e 0%, #0a0f1c 60%, #070b14 100%);
+    line-height: 1.45;
+    width: 100%;
+    height: 100svh;
+    min-height: 540px;
+    margin: 0 auto;
+    padding: clamp(0.7rem, 1.6vw, 1.1rem) clamp(0.7rem, 2vw, 1.4rem) 0.6rem;
+    box-sizing: border-box;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(0.45rem, 1vh, 0.75rem);
+    contain: layout style;
+}
+.ef * { box-sizing: border-box; }
+.ef a { color: inherit; }
+
+/* ---------- Header ---------- */
+.ef-head { flex: 0 0 auto; display: flex; align-items: baseline; justify-content: space-between; gap: clamp(0.8rem, 3vw, 2.2rem); flex-wrap: wrap; max-width: 1320px; width: 100%; margin: 0 auto; }
+.ef-title { font-family: 'Instrument Serif', Georgia, serif; font-weight: 400; font-size: clamp(1.35rem, 2.9vw, 2.25rem); line-height: 1.05; letter-spacing: -0.015em; margin: 0; color: #fbfcfe; display: flex; align-items: center; gap: 0.55rem; }
+.ef-title em { font-style: italic; color: var(--accent); }
+.ef-dot { width: 8px; height: 8px; border-radius: 50%; background: #4ade80; box-shadow: 0 0 0 4px rgba(74,222,128,0.14); animation: ef-pulse 2.6s ease-in-out infinite; flex: 0 0 auto; }
+.ef-dot.idle { background: #94a3b8; box-shadow: 0 0 0 4px rgba(148,163,184,0.12); animation: none; }
+.ef-dot.error { background: #f87171; box-shadow: 0 0 0 4px rgba(248,113,113,0.14); animation: none; }
+@keyframes ef-pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+.ef-lede { font-size: clamp(0.63rem, 0.85vw, 0.72rem); color: var(--ink-dim); max-width: 62ch; margin: 0; line-height: 1.45; }
+.ef-lede strong { color: var(--ink); font-weight: 500; }
+
+/* ---------- Panel ---------- */
+.ef-panel { flex: 1 1 auto; min-height: 0; max-width: 1320px; width: 100%; margin: 0 auto; border: 1px solid var(--line-soft); border-radius: 16px; background: rgba(255,255,255,0.022); overflow: hidden; display: flex; flex-direction: column; }
+.ef-bar { flex: 0 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 0.8rem; flex-wrap: wrap; padding: 0.45rem 0.9rem; border-bottom: 1px solid var(--line-soft); }
+.ef-status { font-size: 0.63rem; color: var(--ink-dim); margin: 0; }
+.ef-tools { display: flex; align-items: center; gap: 0.4rem; flex: 1 1 260px; justify-content: flex-end; max-width: 520px; }
+.ef-search { flex: 1 1 auto; min-width: 120px; font-family: inherit; font-size: 0.7rem; color: var(--ink); background: rgba(255,255,255,0.04); border: 1px solid var(--line-soft); border-radius: 8px; padding: 0.3rem 0.6rem; }
+.ef-search::placeholder { color: var(--ink-faint); }
+.ef-search:focus { outline: none; border-color: rgba(255,255,255,0.24); }
+.ef-btn { font-family: inherit; font-size: 0.62rem; letter-spacing: 0.06em; color: var(--ink); background: rgba(255,255,255,0.05); border: 1px solid var(--line); border-radius: 999px; padding: 0.28rem 0.7rem; cursor: pointer; flex: 0 0 auto; }
+.ef-btn:hover { background: rgba(255,255,255,0.10); border-color: rgba(255,255,255,0.24); }
+.ef-btn:disabled { opacity: 0.5; cursor: default; }
+.ef-progress { height: 2px; background: rgba(255,255,255,0.06); }
+.ef-progress-fill { height: 100%; width: 0; background: var(--accent); transition: width 0.35s ease; }
+
+.ef-filters { flex: 0 0 auto; display: flex; flex-direction: column; gap: 0.26rem; padding: 0.4rem 0.9rem; border-bottom: 1px solid var(--line-soft); }
+.ef-row { display: flex; align-items: center; gap: 0.35rem; flex-wrap: nowrap; overflow-x: auto; overflow-y: hidden; scrollbar-width: none; padding-bottom: 1px; }
+.ef-row::-webkit-scrollbar { height: 0; }
+.ef-key { position: sticky; left: 0; z-index: 1; flex: 0 0 auto; font-size: 0.53rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-faint); background: linear-gradient(90deg, #0a0f1c 72%, transparent); padding-right: 0.4rem; min-width: 62px; }
+.ef-chip { flex: 0 0 auto; font-family: inherit; font-size: 0.64rem; color: var(--ink-dim); background: rgba(255,255,255,0.03); border: 1px solid var(--line-soft); border-radius: 999px; padding: 0.2rem 0.6rem; cursor: pointer; white-space: nowrap; }
+.ef-chip:hover { color: var(--ink); border-color: rgba(255,255,255,0.22); }
+.ef-chip.on { color: #08111f; background: var(--chipcolor, #e8eef7); border-color: transparent; font-weight: 500; }
+.ef-chip .ef-n { opacity: 0.6; margin-left: 0.3rem; font-variant-numeric: tabular-nums; }
+.ef-chip.empty { opacity: 0.4; }
+
+.ef-list { flex: 1 1 auto; min-height: 130px; overflow-y: auto; scrollbar-width: thin; overscroll-behavior: contain; }
+.ef-item { display: block; padding: 0.55rem 0.9rem; border-bottom: 1px solid var(--line-soft); text-decoration: none; color: inherit; }
+.ef-item:last-child { border-bottom: 0; }
+.ef-item:hover { background: rgba(255,255,255,0.035); }
+.ef-item.watch { border-left: 2px solid var(--flag); }
+.ef-meta { display: flex; align-items: center; gap: 0.45rem; flex-wrap: wrap; font-size: 0.57rem; color: var(--ink-faint); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.2rem; }
+.ef-lang { color: #cbd6e6; background: rgba(255,255,255,0.07); border-radius: 4px; padding: 0.06rem 0.32rem; letter-spacing: 0.08em; }
+.ef-flag { color: var(--flag); border: 1px solid rgba(255,107,157,0.5); border-radius: 4px; padding: 0.04rem 0.3rem; }
+.ef-scale { display: inline-flex; gap: 2px; align-items: center; }
+.ef-pip { width: 4px; height: 4px; border-radius: 50%; background: rgba(255,255,255,0.18); }
+.ef-pip.on { background: var(--accent); }
+.ef-why { color: var(--ink-faint); letter-spacing: 0.08em; }
+.ef-item-title { font-size: 0.79rem; font-weight: 500; line-height: 1.35; color: #f0f4fa; }
+.ef-item:hover .ef-item-title { color: var(--cool); }
+.ef-snip { font-size: 0.66rem; line-height: 1.45; color: var(--ink-dim); margin-top: 0.15rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.ef-tags { display: flex; gap: 0.28rem; flex-wrap: wrap; margin-top: 0.3rem; }
+.ef-t { font-size: 0.53rem; letter-spacing: 0.14em; text-transform: uppercase; border: 1px solid; border-radius: 999px; padding: 0.08rem 0.42rem; }
+.ef-state { padding: 1.6rem 1rem; text-align: center; font-size: 0.74rem; color: var(--ink-dim); line-height: 1.6; }
+.ef-state strong { color: var(--ink); font-weight: 500; }
+.ef-more { display: block; width: 100%; border: 0; border-top: 1px solid var(--line-soft); background: rgba(255,255,255,0.02); font-family: inherit; font-size: 0.64rem; color: var(--ink-dim); padding: 0.45rem; cursor: pointer; letter-spacing: 0.06em; }
+.ef-more:hover { color: var(--ink); }
+
+/* ---------- Sheets ---------- */
+.ef-sheet { position: absolute; left: clamp(0.7rem, 2vw, 1.4rem); right: clamp(0.7rem, 2vw, 1.4rem); bottom: 2.6rem; z-index: 30; max-height: 66%; overflow-y: auto; display: none; border: 1px solid var(--line); border-radius: 14px; padding: 0.9rem 1rem; background: rgba(10,15,28,0.96); backdrop-filter: blur(10px); box-shadow: 0 24px 60px rgba(0,0,0,0.55); }
+.ef-sheet.open { display: block; }
+.ef-sheet-close { position: absolute; top: 0.5rem; right: 0.7rem; background: none; border: 0; color: var(--ink-faint); font-size: 1rem; cursor: pointer; font-family: inherit; line-height: 1; }
+.ef-sheet-close:hover { color: var(--ink); }
+.ef-note { font-size: 0.68rem; line-height: 1.6; color: var(--ink-dim); margin: 0 0 0.6rem; max-width: 96ch; }
+.ef-note strong { color: var(--ink); font-weight: 500; }
+.ef-src-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 0.1rem 0.9rem; }
+.ef-src { display: flex; justify-content: space-between; gap: 0.5rem; font-size: 0.62rem; color: var(--ink-dim); padding: 0.14rem 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
+.ef-src span:last-child { font-variant-numeric: tabular-nums; color: var(--ink-faint); }
+.ef-src.fail span:last-child { color: #d98a8a; }
+
+.ef-foot { flex: 0 0 auto; max-width: 1320px; width: 100%; margin: 0 auto; padding-top: 0.4rem; border-top: 1px solid var(--line-soft); font-size: 0.57rem; color: var(--ink-faint); line-height: 1.4; display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+.ef-foot-tools { display: flex; gap: 0.35rem; flex: 0 0 auto; }
+.ef-tab { font-family: inherit; font-size: 0.58rem; letter-spacing: 0.08em; color: var(--ink-dim); background: rgba(255,255,255,0.04); border: 1px solid var(--line-soft); border-radius: 999px; padding: 0.2rem 0.6rem; cursor: pointer; }
+.ef-tab:hover, .ef-tab.on { color: var(--ink); border-color: rgba(255,255,255,0.24); }
+
+@media (max-width: 900px) {
+    .ef { height: auto; min-height: 0; overflow: visible; }
+    .ef-panel { flex: 0 0 auto; }
+    .ef-list { max-height: 70vh; }
+    .ef-sheet { position: fixed; left: 0.6rem; right: 0.6rem; bottom: 0.6rem; max-height: 72vh; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .ef *, .ef *::before, .ef *::after { animation: none !important; transition: none !important; }
+}
+</style>
+</head>
+<body style="margin:0; background:#05070e;">
+<div class="ef">
+
+    <header class="ef-head">
+        <h1 class="ef-title"><span class="ef-dot idle" id="efDot"></span> The <em>frontline</em></h1>
+        <p class="ef-lede">
+            <strong>Environmental destruction worldwide, at scale, in 25 languages.</strong>
+            Only findings that reach past the local: a global or basin-wide scope, a magnitude, a mechanism,
+            or a human consequence. Every story carries the scale that earned it a place, and the strongest
+            are marked. Water bugs in one river do not appear here.
+        </p>
+    </header>
+
+    <section class="ef-panel">
+        <div class="ef-bar">
+            <p class="ef-status" id="efStatus">Loading the wire…</p>
+            <div class="ef-tools">
+                <input class="ef-search" id="efSearch" type="search" placeholder="PFAS, tipping point, deforestation, deaths…" aria-label="Filter headlines">
+                <button class="ef-btn" id="efClear">Clear</button>
+                <button class="ef-btn" id="efRefresh">Refresh</button>
+            </div>
+        </div>
+        <div class="ef-progress"><div class="ef-progress-fill" id="efProgress"></div></div>
+
+        <div class="ef-filters">
+            <div class="ef-row" id="efTopicRow"><span class="ef-key">Subject</span></div>
+            <div class="ef-row" id="efRegionRow"><span class="ef-key">Source</span></div>
+            <div class="ef-row" id="efLangRow"><span class="ef-key">Language</span></div>
+            <div class="ef-row" id="efWhenRow"><span class="ef-key">Window</span></div>
+            <div class="ef-row" id="efScaleRow"><span class="ef-key">Scale</span></div>
+        </div>
+
+        <div class="ef-list" id="efList"><div class="ef-state">Loading the wire…</div></div>
+    </section>
+
+    <div class="ef-sheet" id="efSheetAbout" role="dialog" aria-label="How this feed works">
+        <button class="ef-sheet-close" data-close aria-label="Close">×</button>
+        <p class="ef-note">
+            <strong>What this is.</strong> A feed of environmental destruction worldwide, filtered for scale.
+            Nothing here is written or summarised — headlines and snippets are the publishers' own, every row
+            links to the original, and no model touches the text.
+        </p>
+        <p class="ef-note">
+            <strong>How scale is measured.</strong> Being about the environment is not enough. Each story is
+            scored on five signals: <em>global</em> scope (worth 2), <em>regional</em> scope such as a basin,
+            continent or ocean (1), a <em>systemic</em> mechanism — tipping point, collapse, cascade,
+            irreversible threshold, mass extinction, a global assessment (2), a <em>magnitude</em> such as a
+            percentage, an area, a tonnage or a population figure (1), a human <em>consequence</em> such as
+            deaths, displacement, food or water security (1), and a generalising <em>finding</em> — a study,
+            assessment or dataset rather than an incident (1). Below two points a story never enters the feed.
+            At four or more it is marked as full planetary scale. The pips on each row show the score and the
+            words beside them name the signals it scored on.
+        </p>
+        <p class="ef-note">
+            <strong>What that excludes.</strong> A survey of water bugs in one Angolan river scores nothing and
+            never appears. A council approving recycling bins, a beach cleanup, a newly described beetle, a rare
+            bird sighting: all scored and all dropped. What survives is the finding at scale — freshwater species
+            down 85% since 1970 and the food supply that depends on them, air pollution and its eight million
+            deaths a year, coral bleaching across 84% of the world's reefs.
+        </p>
+        <p class="ef-note">
+            <strong>Limits worth knowing.</strong> Scoring is mechanical: it reads words, not meaning, so an
+            important local story written without any scale language will be dropped, and a thin story dressed in
+            scale language can slip through. Google News caps a query at roughly 100 results over about 30 days.
+            A regional edition often carries a syndicated wire story rather than local reporting, which inflates a
+            language count without adding a local view. Coverage is uneven by language and the counts show it
+            rather than hiding it.
+        </p>
+    </div>
+
+    <div class="ef-sheet" id="efSheetSources" role="dialog" aria-label="Sources and coverage">
+        <button class="ef-sheet-close" data-close aria-label="Close">×</button>
+        <p class="ef-note">
+            Every wire read on the last harvest: what it returned, and how many of its stories were dropped for
+            being too local. A wire that could not be reached says so rather than disappearing.
+        </p>
+        <div class="ef-src-grid" id="efSrcGrid"></div>
+    </div>
+
+    <footer class="ef-foot">
+        <span>Harvested every two hours from analysis desks, field press, journals, institutions, regional editions in 25 languages, and dedicated planet-scale searches. Headlines belong to their publishers.</span>
+        <span class="ef-foot-tools">
+            <button class="ef-tab" data-sheet="efSheetAbout">How this works</button>
+            <button class="ef-tab" data-sheet="efSheetSources">Sources &amp; coverage</button>
+        </span>
+    </footer>
+</div>
+
+<script>
+(function () {
+'use strict';
+
+const REPO = 'WelcomeToYourGalaxy/environment-feed';
+const BRANCH = 'main';
+const ENDPOINTS = [
+    () => 'https://raw.githubusercontent.com/' + REPO + '/' + BRANCH + '/wire_env.json?t=' + Date.now(),
+    () => 'https://cdn.jsdelivr.net/gh/' + REPO + '@' + BRANCH + '/wire_env.json'
+];
+
+const TOPIC_COLOR = {
+    climate: '#6fd3ff',        // cyan
+    forest: '#79d17f',         // green
+    ocean: '#6f9bff',          // azure
+    freshwater: '#8de6c8',     // mint
+    biodiversity: '#a98cf0',   // violet
+    pollution: '#e0607f',      // rose
+    extraction: '#cf6fd8',     // magenta
+    food: '#4fc4a0',           // teal
+    energy: '#9fb0c8',         // slate
+    health: '#e29ad8',         // pink
+    accountability: '#ff6b9d'  // rose, matching the scale marker
+};
+const WINDOWS = [
+    { id: 'd1', label: '24 hours', ms: 864e5 },
+    { id: 'd7', label: '7 days', ms: 7 * 864e5 },
+    { id: 'd30', label: '30 days', ms: 30 * 864e5 },
+    { id: 'all', label: 'Everything', ms: null }
+];
+
+const SCALES = [
+    { id: 'all', label: 'Everything kept' },
+    { id: 'big', label: 'Big picture only' },
+    { id: 'sort', label: 'Sort by scale' }
+];
+
+const state = { items: [], topics: [], languages: {}, regions: [], sources: [], generated: null,
+                bigScore: 4, topic: 'all', region: 'all', langs: new Set(), when: 'all',
+                scale: 'all', query: '', shown: 50, loading: false };
+
+const $list = document.getElementById('efList');
+const $status = document.getElementById('efStatus');
+const $dot = document.getElementById('efDot');
+const $prog = document.getElementById('efProgress');
+const $topicRow = document.getElementById('efTopicRow');
+const $regionRow = document.getElementById('efRegionRow');
+const $langRow = document.getElementById('efLangRow');
+const $whenRow = document.getElementById('efWhenRow');
+const $scaleRow = document.getElementById('efScaleRow');
+const $search = document.getElementById('efSearch');
+const $srcGrid = document.getElementById('efSrcGrid');
+const $refresh = document.getElementById('efRefresh');
+const $more = document.createElement('button');
+$more.className = 'ef-more';
+$more.addEventListener('click', () => { state.shown += 50; render(); });
+
+function esc(s) { return (s || '').replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c])); }
+function timeAgo(ts) {
+    if (!ts) return 'undated';
+    const m = Math.round((Date.now() - ts) / 60000);
+    if (m < 1) return 'just now';
+    if (m < 60) return m + 'm ago';
+    const h = Math.round(m / 60);
+    if (h < 24) return h + 'h ago';
+    const d = Math.round(h / 24);
+    return d < 30 ? d + 'd ago' : new Date(ts).toISOString().slice(0, 10);
+}
+function langName(c) { return state.languages[c] || c; }
+function topicLabel(id) { const t = state.topics.find(t => t.id === id); return t ? t.label : id; }
+function setStatus(text, cls) { $status.textContent = text; $dot.className = 'ef-dot' + (cls ? ' ' + cls : ''); }
+
+async function load() {
+    if (state.loading) return;
+    state.loading = true; $refresh.disabled = true; $prog.style.width = '40%';
+    setStatus('Loading the wire…', '');
+
+    let data = null, err = null;
+    for (const ep of ENDPOINTS) {
+        try {
+            const res = await fetch(ep(), { cache: 'no-store' });
+            if (!res.ok) { err = 'HTTP ' + res.status; continue; }
+            data = await res.json(); break;
+        } catch (e) { err = e.message; }
+    }
+    $prog.style.width = '100%';
+
+    if (!data || !Array.isArray(data.items)) {
+        state.loading = false; $refresh.disabled = false; $prog.style.width = '0';
+        setStatus('The wire could not be read' + (err ? ' (' + err + ')' : '') + '. Press Refresh.', 'error');
+        render(); return;
+    }
+
+    state.items = data.items.map(i => ({
+        title: i.t, link: i.u, outlet: i.o, lang: i.g, region: i.r,
+        kind: i.k, ts: i.d, snippet: i.s, topics: i.x || ['climate'],
+        score: i.p || 0, why: i.y || []
+    }));
+    state.bigScore = data.big_picture_score || 4;
+    state.topics = data.topics || [];
+    state.languages = data.languages || {};
+    state.regions = data.regions || [];
+    state.sources = data.sources || [];
+    state.generated = data.generated ? Date.parse(data.generated) : null;
+
+    buildChips(); renderSources();
+
+    const c = data.counts || {};
+    const ageH = state.generated ? (Date.now() - state.generated) / 3600000 : null;
+    const big = state.items.filter(i => i.score >= state.bigScore).length;
+    setStatus(
+        (c.stories || state.items.length) + ' stories · ' + big + ' at full planetary scale · ' +
+        (c.dropped_as_small ? c.dropped_as_small + ' dropped as too local · ' : '') +
+        (c.languages || new Set(state.items.map(i => i.lang)).size) + ' languages · ' +
+        (c.wires_ok || '?') + '/' + (c.wires_total || '?') + ' wires answered · harvested ' +
+        (state.generated ? timeAgo(state.generated) : 'unknown'),
+        ageH !== null && ageH > 6 ? 'idle' : ''
+    );
+
+    state.loading = false; $refresh.disabled = false;
+    setTimeout(() => { $prog.style.width = '0'; }, 400);
+    render();
+}
+
+function withinWindow(i) {
+    const w = WINDOWS.find(w => w.id === state.when);
+    if (!w || !w.ms) return true;
+    if (!i.ts) return false;
+    return (Date.now() - i.ts) <= w.ms;
+}
+
+function visible() {
+    const q = state.query.toLowerCase();
+    return state.items.filter(i => {
+        if (state.topic !== 'all' && i.topics.indexOf(state.topic) === -1) return false;
+        if (state.region !== 'all' && i.region !== state.region) return false;
+        if (state.langs.size && !state.langs.has(i.lang)) return false;
+        if (!withinWindow(i)) return false;
+        if (state.scale === 'big' && i.score < state.bigScore) return false;
+        if (q && (i.title + ' ' + i.snippet + ' ' + i.outlet).toLowerCase().indexOf(q) === -1) return false;
+        return true;
+    }).sort(state.scale === 'sort'
+        ? (a, b) => (b.score - a.score) || ((b.ts || 0) - (a.ts || 0))
+        : (a, b) => (b.ts || 0) - (a.ts || 0));
+}
+
+function render() {
+    const items = visible(), slice = items.slice(0, state.shown);
+    if (!slice.length) {
+        $list.innerHTML = '<div class="ef-state">' + (
+            state.loading ? 'Loading the wire…'
+            : state.items.length ? '<strong>Nothing matches these filters.</strong><br>Widen the window, the subject or the language.'
+            : '<strong>No stories loaded.</strong><br>Press Refresh, or check that the harvester has run.'
+        ) + '</div>';
+    } else {
+        $list.innerHTML = slice.map(i => {
+            const tags = i.topics.map(id => {
+                const c = TOPIC_COLOR[id] || '#9fb0c8';
+                return '<span class="ef-t" style="color:' + c + ';border-color:' + c + '55">' + esc(topicLabel(id)) + '</span>';
+            }).join('');
+            const big = i.score >= state.bigScore;
+            const pips = '<span class="ef-scale" title="scale score ' + i.score + ' of 7">' +
+                [1,2,3,4,5].map(n => '<span class="ef-pip' + (n <= Math.min(i.score,5) ? ' on' : '') + '"></span>').join('') +
+                '</span>';
+            return '<a class="ef-item' + (big ? ' watch' : '') + '" href="' + esc(i.link) + '" target="_blank" rel="noopener noreferrer">' +
+                '<div class="ef-meta"><span class="ef-lang">' + esc(langName(i.lang)) + '</span>' +
+                '<span>' + esc(i.outlet) + '</span><span>' + esc(i.region) + '</span>' +
+                pips + (i.why.length ? '<span class="ef-why">' + esc(i.why.join(' · ')) + '</span>' : '') +
+                '<span>' + timeAgo(i.ts) + '</span></div>' +
+                '<div class="ef-item-title">' + esc(i.title) + '</div>' +
+                (i.snippet ? '<div class="ef-snip">' + esc(i.snippet) + '</div>' : '') +
+                '<div class="ef-tags">' + tags + '</div></a>';
+        }).join('');
+        if (items.length > state.shown) {
+            $more.textContent = 'Show more (' + (items.length - state.shown) + ' remaining)';
+            $list.appendChild($more);
+        }
+    }
+    chipCounts();
+}
+
+function chip(row, key, value, label, color) {
+    const c = document.createElement('button');
+    c.className = 'ef-chip';
+    c.dataset[key] = value;
+    if (color) c.style.setProperty('--chipcolor', color);
+    c.innerHTML = esc(label) + ' <span class="ef-n"></span>';
+    row.appendChild(c);
+    return c;
+}
+
+function buildChips() {
+    [$topicRow, $regionRow, $langRow, $whenRow, $scaleRow].forEach(r => r.querySelectorAll('.ef-chip').forEach(c => c.remove()));
+
+    chip($topicRow, 'topic', 'all', 'All').classList.add('on');
+    state.topics.forEach(t => chip($topicRow, 'topic', t.id, t.label, TOPIC_COLOR[t.id]));
+
+    chip($regionRow, 'region', 'all', 'All').classList.add('on');
+    state.regions.forEach(r => chip($regionRow, 'region', r, r));
+
+    Object.keys(state.languages).sort((a, b) => langName(a).localeCompare(langName(b)))
+        .forEach(code => chip($langRow, 'lang', code, langName(code)));
+
+    WINDOWS.forEach(w => {
+        const c = chip($whenRow, 'when', w.id, w.label);
+        if (w.id === state.when) c.classList.add('on');
+    });
+
+    SCALES.forEach(sc => {
+        const c = chip($scaleRow, 'scale', sc.id, sc.label);
+        if (sc.id === state.scale) c.classList.add('on');
+    });
+}
+
+function chipCounts() {
+    const q = state.query.toLowerCase();
+    const base = state.items.filter(i =>
+        (!q || (i.title + ' ' + i.snippet).toLowerCase().indexOf(q) !== -1) && withinWindow(i));
+    $topicRow.querySelectorAll('.ef-chip').forEach(c => {
+        const id = c.dataset.topic;
+        const n = id === 'all' ? base.length : base.filter(i => i.topics.indexOf(id) !== -1).length;
+        c.querySelector('.ef-n').textContent = n;
+        c.classList.toggle('empty', n === 0 && id !== 'all');
+    });
+    $regionRow.querySelectorAll('.ef-chip').forEach(c => {
+        const r = c.dataset.region;
+        const n = r === 'all' ? base.length : base.filter(i => i.region === r).length;
+        c.querySelector('.ef-n').textContent = n;
+        c.classList.toggle('empty', n === 0 && r !== 'all');
+    });
+    $langRow.querySelectorAll('.ef-chip').forEach(c => {
+        const n = base.filter(i => i.lang === c.dataset.lang).length;
+        c.querySelector('.ef-n').textContent = n;
+        c.classList.toggle('empty', n === 0);
+    });
+    $whenRow.querySelectorAll('.ef-chip').forEach(c => {
+        const w = WINDOWS.find(w => w.id === c.dataset.when);
+        const n = state.items.filter(i => !w.ms ? true : (i.ts && (Date.now() - i.ts) <= w.ms)).length;
+        c.querySelector('.ef-n').textContent = n;
+    });
+    $scaleRow.querySelectorAll('.ef-chip').forEach(c => {
+        const id = c.dataset.scale;
+        c.querySelector('.ef-n').textContent =
+            id === 'big' ? base.filter(i => i.score >= state.bigScore).length
+            : id === 'all' ? base.length : '';
+    });
+}
+
+function renderSources() {
+    $srcGrid.innerHTML = state.sources.map(s =>
+        '<div class="ef-src ' + (s.ok ? '' : 'fail') + '"><span>' + esc(s.name) + '</span>' +
+        '<span>' + (s.ok ? s.kept + ' kept' + (s.small ? ' · ' + s.small + ' too small' : '') : 'unreachable') +
+        '</span></div>').join('');
+}
+
+/* ---- Wiring ---- */
+function single(row, key) {
+    row.addEventListener('click', e => {
+        const c = e.target.closest('.ef-chip'); if (!c) return;
+        state[key] = c.dataset[key]; state.shown = 50;
+        row.querySelectorAll('.ef-chip').forEach(x => x.classList.toggle('on', x === c));
+        render();
+    });
+}
+single($topicRow, 'topic');
+single($regionRow, 'region');
+single($whenRow, 'when');
+single($scaleRow, 'scale');
+
+$langRow.addEventListener('click', e => {
+    const c = e.target.closest('.ef-chip'); if (!c) return;
+    const code = c.dataset.lang;
+    if (state.langs.has(code)) state.langs.delete(code); else state.langs.add(code);
+    c.classList.toggle('on', state.langs.has(code));
+    state.shown = 50; render();
+});
+
+$refresh.addEventListener('click', load);
+document.getElementById('efClear').addEventListener('click', () => {
+    state.topic = 'all'; state.region = 'all'; state.langs.clear(); state.when = 'all';
+    state.scale = 'all'; state.query = ''; state.shown = 50; $search.value = '';
+    $topicRow.querySelectorAll('.ef-chip').forEach(c => c.classList.toggle('on', c.dataset.topic === 'all'));
+    $regionRow.querySelectorAll('.ef-chip').forEach(c => c.classList.toggle('on', c.dataset.region === 'all'));
+    $langRow.querySelectorAll('.ef-chip').forEach(c => c.classList.remove('on'));
+    $whenRow.querySelectorAll('.ef-chip').forEach(c => c.classList.toggle('on', c.dataset.when === 'all'));
+    $scaleRow.querySelectorAll('.ef-chip').forEach(c => c.classList.toggle('on', c.dataset.scale === 'all'));
+    render();
+});
+let timer;
+$search.addEventListener('input', e => {
+    clearTimeout(timer); const v = e.target.value;
+    timer = setTimeout(() => { state.query = v; state.shown = 50; render(); }, 180);
+});
+
+document.querySelectorAll('.ef-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+        const sheet = document.getElementById(tab.dataset.sheet);
+        const opening = !sheet.classList.contains('open');
+        document.querySelectorAll('.ef-sheet').forEach(s => s.classList.remove('open'));
+        document.querySelectorAll('.ef-tab').forEach(t => t.classList.remove('on'));
+        if (opening) { sheet.classList.add('open'); tab.classList.add('on'); }
+    });
+});
+document.querySelectorAll('.ef-sheet [data-close]').forEach(b => {
+    b.addEventListener('click', () => {
+        b.closest('.ef-sheet').classList.remove('open');
+        document.querySelectorAll('.ef-tab').forEach(t => t.classList.remove('on'));
+    });
+});
+document.addEventListener('keydown', e => {
+    if (e.key !== 'Escape') return;
+    document.querySelectorAll('.ef-sheet').forEach(s => s.classList.remove('open'));
+    document.querySelectorAll('.ef-tab').forEach(t => t.classList.remove('on'));
+});
+
+load();
+setInterval(() => { if (!document.hidden) load(); }, 15 * 60 * 1000);
+})();
+@@GALAXY_END_SCRIPT@@
+
+<script>
+(function () {
+    function report() {
+        if (window.innerWidth > 900) return;
+        var h = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
+        parent.postMessage({ galaxyEmbed: 'height', value: h }, '*');
+    }
+    window.addEventListener('load', report);
+    window.addEventListener('resize', report);
+    setInterval(report, 1500);
+})();
+@@GALAXY_END_SCRIPT@@
+</body>
+</html>
+
+</script>
+
+<script>
+(function () {
+    var frame = document.getElementById('galaxy-envfeed-frame');
+    var store = document.getElementById('galaxy-envfeed-doc');
+    if (!frame || !store) return;
+    var doc = store.textContent.split('@@GALAXY_END_SCRIPT@@').join('<' + '/script>');
+
+    function sizeFrame() {
+        if (window.innerWidth > 900) {
+            var h = Math.max(560, Math.min(window.innerHeight * 0.88, 1000));
+            frame.style.height = Math.round(h) + 'px';
+        } else if (!frame.dataset.selfSized) {
+            frame.style.height = '1400px';
+        }
+    }
+    sizeFrame();
+    window.addEventListener('resize', function () {
+        if (window.innerWidth > 900) { frame.dataset.selfSized = ''; }
+        sizeFrame();
+    });
+    window.addEventListener('message', function (e) {
+        if (!e.data || e.data.galaxyEmbed !== 'height') return;
+        if (window.innerWidth > 900) return;
+        frame.dataset.selfSized = '1';
+        frame.style.height = Math.round(Math.max(600, Math.min(e.data.value + 20, 6000))) + 'px';
+    });
+
+    if ('srcdoc' in frame) { frame.srcdoc = doc; }
+    else { var d = frame.contentWindow.document; d.open(); d.write(doc); d.close(); }
+})();
+</script>
