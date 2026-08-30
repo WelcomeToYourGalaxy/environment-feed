@@ -12,10 +12,10 @@ paid service, no dependencies beyond the Python standard library.
 
 ## The point of this feed
 
-A survey of water bug populations in one Angolan river is a real environmental story and it does
-not belong here. "Freshwater species have declined 85% since 1970, threatening food supplies for
-200 million people" does. The difference is scale, and this harvester measures it rather than
-trusting the source to.
+A single-site population survey on one river is a real environmental story and it does not belong
+here. "Freshwater species have declined 85% since 1970, threatening food supplies for 200 million
+people" does. The difference is scale, and this harvester measures it rather than trusting the
+source to.
 
 Each story is scored on six signals:
 
@@ -28,9 +28,8 @@ Each story is scored on six signals:
 | Consequence | 1 | deaths, displacement, food or water security, livelihoods |
 | Finding | 1 | a study, assessment or dataset rather than an incident |
 
-Below **2** a story never enters the feed. At **4** or more it is marked as full planetary scale,
-and the page can be filtered to those alone or sorted by score. Every row shows its pips and the
-signals it scored on, so the judgement is visible rather than hidden.
+Below **2** a story never enters the feed. Every row shows its pips and the signals it scored on,
+so the judgement is visible rather than hidden.
 
 The harvester also reports how many stories each wire produced that were dropped for being too
 local. That number is usually larger than the number kept, which is the feed working.
@@ -80,6 +79,21 @@ written in that language, not translated at read time.
 **Planet scale** — eight searches phrased for findings regional desks rarely lead with: planetary
 limits, global assessments, worldwide declines, human consequence, toxics at scale, who is
 responsible, and two in French and Spanish.
+
+## Regions
+
+Every story is placed geographically, by the ground the finding concerns rather than the wire it
+arrived on. Ten buckets: Africa, Middle East & North Africa, Asia, Europe, Latin America &
+Caribbean, North America, Oceania, Arctic & Antarctic, Oceans & high seas, and No single region —
+which holds both worldwide findings that name no particular country and anything else naming
+nowhere. A study spanning two continents files under both. Each row prints its region beside the
+outlet.
+
+The separate **Wire** filter is provenance, a different question: analysis desks, field press,
+journals, institutions, regional press, planet-scale searches. No geography appears in it.
+
+The **Window** filter covers the last 24 hours, 7 days and 30 days, plus *Older than 30 days* for
+the tail of the 45-day archive. That chip appears only once there is something in it.
 
 ## Eleven subjects
 

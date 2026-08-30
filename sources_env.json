@@ -1,114 +1,1668 @@
 {
-  "_note": "Wires for the environment feed. harvest_env.py reads this and writes wire_env.json. 'query' is used only by the gnews and scope blocks and is written in the language of that locale. The 'scope' block is deliberately phrased for planet-scale findings — global assessments, tipping points, worldwide declines — because regional desks rarely lead with them.",
-
+  "_note": "Wires for the environment feed. harvest_env.py reads this and writes wire_env.json. 'query' is used only by the gnews and scope blocks and is written in the language of that locale. The 'scope' block is deliberately phrased for planet-scale findings — global assessments, tipping points, worldwide declines — because regional desks rarely lead with them. Locale coverage is expanded: several country editions per language, and each query split into slices so no single search hits Google News's ~100-result cap.",
   "direct": [
-    { "name": "Carbon Brief",              "lang": "en", "region": "Analysis",     "url": "https://www.carbonbrief.org/feed/" },
-    { "name": "Yale Environment 360",      "lang": "en", "region": "Analysis",     "url": "https://e360.yale.edu/feed.xml" },
-    { "name": "Inside Climate News",       "lang": "en", "region": "Analysis",     "url": "https://insideclimatenews.org/feed/" },
-    { "name": "Climate Home News",         "lang": "en", "region": "Analysis",     "url": "https://www.climatechangenews.com/feed/" },
-    { "name": "DeSmog",                    "lang": "en", "region": "Analysis",     "url": "https://www.desmog.com/feed/" },
-    { "name": "Mongabay",                  "lang": "en", "region": "Field press",  "url": "https://news.mongabay.com/feed/" },
-    { "name": "Mongabay — Latam",          "lang": "es", "region": "Field press",  "url": "https://es.mongabay.com/feed/" },
-    { "name": "Mongabay — Brasil",         "lang": "pt", "region": "Field press",  "url": "https://brasil.mongabay.com/feed/" },
-    { "name": "The Guardian — Environment","lang": "en", "region": "Field press",  "url": "https://www.theguardian.com/environment/rss" },
-    { "name": "Grist",                     "lang": "en", "region": "Field press",  "url": "https://grist.org/feed/" },
-    { "name": "The Third Pole",            "lang": "en", "region": "Field press",  "url": "https://dialogue.earth/en/feed/" },
-    { "name": "Nature — news",             "lang": "en", "region": "Journals",     "url": "https://www.nature.com/nature.rss" },
-    { "name": "ScienceDaily — Earth & climate", "lang": "en", "region": "Journals", "url": "https://www.sciencedaily.com/rss/earth_climate.xml" },
-    { "name": "ScienceDaily — Ecology",    "lang": "en", "region": "Journals",     "url": "https://www.sciencedaily.com/rss/plants_animals/ecology.xml" },
-    { "name": "Phys.org — Earth",          "lang": "en", "region": "Journals",     "url": "https://phys.org/rss-feed/earth-news/" },
-    { "name": "Phys.org — Environment",    "lang": "en", "region": "Journals",     "url": "https://phys.org/rss-feed/earth-news/environment/" },
-    { "name": "UNEP",                      "lang": "en", "region": "Institutional", "url": "https://www.unep.org/rss.xml" },
-    { "name": "World Resources Institute", "lang": "en", "region": "Institutional", "url": "https://www.wri.org/rss.xml" },
-    { "name": "IUCN",                      "lang": "en", "region": "Institutional", "url": "https://iucn.org/rss.xml" },
-    { "name": "Copernicus (EU)",           "lang": "en", "region": "Institutional", "url": "https://climate.copernicus.eu/rss.xml" }
+    {
+      "name": "Carbon Brief",
+      "lang": "en",
+      "region": "Analysis",
+      "url": "https://www.carbonbrief.org/feed/"
+    },
+    {
+      "name": "Yale Environment 360",
+      "lang": "en",
+      "region": "Analysis",
+      "url": "https://e360.yale.edu/feed.xml"
+    },
+    {
+      "name": "Inside Climate News",
+      "lang": "en",
+      "region": "Analysis",
+      "url": "https://insideclimatenews.org/feed/"
+    },
+    {
+      "name": "Climate Home News",
+      "lang": "en",
+      "region": "Analysis",
+      "url": "https://www.climatechangenews.com/feed/"
+    },
+    {
+      "name": "DeSmog",
+      "lang": "en",
+      "region": "Analysis",
+      "url": "https://www.desmog.com/feed/"
+    },
+    {
+      "name": "Mongabay",
+      "lang": "en",
+      "region": "Field press",
+      "url": "https://news.mongabay.com/feed/"
+    },
+    {
+      "name": "Mongabay — Latam",
+      "lang": "es",
+      "region": "Field press",
+      "url": "https://es.mongabay.com/feed/"
+    },
+    {
+      "name": "Mongabay — Brasil",
+      "lang": "pt",
+      "region": "Field press",
+      "url": "https://brasil.mongabay.com/feed/"
+    },
+    {
+      "name": "The Guardian — Environment",
+      "lang": "en",
+      "region": "Field press",
+      "url": "https://www.theguardian.com/environment/rss"
+    },
+    {
+      "name": "Grist",
+      "lang": "en",
+      "region": "Field press",
+      "url": "https://grist.org/feed/"
+    },
+    {
+      "name": "The Third Pole",
+      "lang": "en",
+      "region": "Field press",
+      "url": "https://dialogue.earth/en/feed/"
+    },
+    {
+      "name": "Nature — news",
+      "lang": "en",
+      "region": "Journals",
+      "url": "https://www.nature.com/nature.rss"
+    },
+    {
+      "name": "ScienceDaily — Earth & climate",
+      "lang": "en",
+      "region": "Journals",
+      "url": "https://www.sciencedaily.com/rss/earth_climate.xml"
+    },
+    {
+      "name": "ScienceDaily — Ecology",
+      "lang": "en",
+      "region": "Journals",
+      "url": "https://www.sciencedaily.com/rss/plants_animals/ecology.xml"
+    },
+    {
+      "name": "Phys.org — Earth",
+      "lang": "en",
+      "region": "Journals",
+      "url": "https://phys.org/rss-feed/earth-news/"
+    },
+    {
+      "name": "Phys.org — Environment",
+      "lang": "en",
+      "region": "Journals",
+      "url": "https://phys.org/rss-feed/earth-news/environment/"
+    },
+    {
+      "name": "UNEP",
+      "lang": "en",
+      "region": "Institutional",
+      "url": "https://www.unep.org/rss.xml"
+    },
+    {
+      "name": "World Resources Institute",
+      "lang": "en",
+      "region": "Institutional",
+      "url": "https://www.wri.org/rss.xml"
+    },
+    {
+      "name": "IUCN",
+      "lang": "en",
+      "region": "Institutional",
+      "url": "https://iucn.org/rss.xml"
+    },
+    {
+      "name": "Copernicus (EU)",
+      "lang": "en",
+      "region": "Institutional",
+      "url": "https://climate.copernicus.eu/rss.xml"
+    }
   ],
-
   "gnews": [
-    { "label": "English",           "lang": "en", "region": "North America",      "hl": "en-US",  "gl": "US", "ceid": "US:en",
-      "query": "\"global study\" environment OR \"worldwide decline\" species OR \"tipping point\" climate OR \"record emissions\" OR deforestation global" },
-    { "label": "English (UK)",      "lang": "en", "region": "Western Europe",     "hl": "en-GB",  "gl": "GB", "ceid": "GB:en",
-      "query": "\"global assessment\" nature OR \"climate tipping point\" OR \"biodiversity loss\" study OR \"ocean warming\" record" },
-    { "label": "English (India)",   "lang": "en", "region": "South Asia",         "hl": "en-IN",  "gl": "IN", "ceid": "IN:en",
-      "query": "\"air pollution\" deaths study OR groundwater depletion India OR heatwave record OR \"climate impact\" millions" },
-    { "label": "English (Aus)",     "lang": "en", "region": "Oceania",            "hl": "en-AU",  "gl": "AU", "ceid": "AU:en",
-      "query": "\"coral bleaching\" reef OR \"species extinction\" report OR \"climate report\" warming OR \"ocean heat\" record" },
-    { "label": "English (S. Africa)","lang": "en", "region": "Sub-Saharan Africa", "hl": "en-ZA", "gl": "ZA", "ceid": "ZA:en",
-      "query": "drought crisis millions OR \"water scarcity\" Africa OR mining pollution communities OR \"climate impact\" study" },
-    { "label": "English (Nigeria)", "lang": "en", "region": "Sub-Saharan Africa", "hl": "en-NG",  "gl": "NG", "ceid": "NG:en",
-      "query": "\"oil spill\" Niger Delta OR desertification Sahel OR flooding displaced thousands OR \"gas flaring\"" },
-    { "label": "English (Kenya)",   "lang": "en", "region": "Sub-Saharan Africa", "hl": "en-KE",  "gl": "KE", "ceid": "KE:en",
-      "query": "drought Horn of Africa millions OR deforestation Congo Basin OR \"climate finance\" Africa OR wildlife decline report" },
-    { "label": "Español",           "lang": "es", "region": "Western Europe",     "hl": "es",     "gl": "ES", "ceid": "ES:es",
-      "query": "\"estudio global\" clima OR \"pérdida de biodiversidad\" OR \"punto de inflexión\" climático OR sequía récord" },
-    { "label": "Español (MX)",      "lang": "es", "region": "Latin America",      "hl": "es-419", "gl": "MX", "ceid": "MX:es-419",
-      "query": "deforestación Amazonía OR contaminación minera ríos OR \"crisis del agua\" millones OR \"cambio climático\" estudio" },
-    { "label": "Português",         "lang": "pt", "region": "Latin America",      "hl": "pt-BR",  "gl": "BR", "ceid": "BR:pt-419",
-      "query": "desmatamento Amazônia dados OR \"perda de biodiversidade\" OR contaminação mercúrio garimpo OR seca recorde" },
-    { "label": "Français",          "lang": "fr", "region": "Western Europe",     "hl": "fr",     "gl": "FR", "ceid": "FR:fr",
-      "query": "\"étude mondiale\" climat OR \"effondrement de la biodiversité\" OR \"point de bascule\" climatique OR déforestation mondiale" },
-    { "label": "Deutsch",           "lang": "de", "region": "Western Europe",     "hl": "de",     "gl": "DE", "ceid": "DE:de",
-      "query": "\"weltweite Studie\" Klima OR Artensterben Bericht OR Kipppunkt Klima OR Entwaldung weltweit" },
-    { "label": "Italiano",          "lang": "it", "region": "Western Europe",     "hl": "it",     "gl": "IT", "ceid": "IT:it",
-      "query": "\"studio globale\" clima OR \"perdita di biodiversità\" OR \"punto di non ritorno\" clima OR siccità record" },
-    { "label": "Nederlands",        "lang": "nl", "region": "Western Europe",     "hl": "nl",     "gl": "NL", "ceid": "NL:nl",
-      "query": "wereldwijde studie klimaat OR biodiversiteitsverlies OR kantelpunt klimaat OR ontbossing wereldwijd" },
-    { "label": "Svenska",           "lang": "sv", "region": "Western Europe",     "hl": "sv",     "gl": "SE", "ceid": "SE:sv",
-      "query": "global studie klimat OR artdöd rapport OR tröskelpunkt klimat OR avskogning världen" },
-    { "label": "Ελληνικά",          "lang": "el", "region": "Western Europe",     "hl": "el",     "gl": "GR", "ceid": "GR:el",
-      "query": "παγκόσμια μελέτη κλίμα OR απώλεια βιοποικιλότητας OR σημείο καμπής κλίμα OR ξηρασία ρεκόρ" },
-    { "label": "Polski",            "lang": "pl", "region": "Eastern Europe",     "hl": "pl",     "gl": "PL", "ceid": "PL:pl",
-      "query": "globalne badanie klimat OR utrata bioróżnorodności OR punkt krytyczny klimat OR wylesianie świat" },
-    { "label": "Русский",           "lang": "ru", "region": "Eastern Europe",     "hl": "ru",     "gl": "RU", "ceid": "RU:ru",
-      "query": "глобальное исследование климат OR утрата биоразнообразия OR точка невозврата климат OR вырубка лесов мир" },
-    { "label": "Українська",        "lang": "uk", "region": "Eastern Europe",     "hl": "uk",     "gl": "UA", "ceid": "UA:uk",
-      "query": "глобальне дослідження клімат OR втрата біорізноманіття OR екологічна катастрофа OR забруднення масштаб" },
-    { "label": "Türkçe",            "lang": "tr", "region": "MENA",               "hl": "tr",     "gl": "TR", "ceid": "TR:tr",
-      "query": "küresel araştırma iklim OR biyoçeşitlilik kaybı OR kritik eşik iklim OR kuraklık rekor" },
-    { "label": "العربية",            "lang": "ar", "region": "MENA",               "hl": "ar",     "gl": "EG", "ceid": "EG:ar",
-      "query": "\"دراسة عالمية\" مناخ OR \"فقدان التنوع البيولوجي\" OR \"ندرة المياه\" ملايين OR التصحر" },
-    { "label": "עברית",             "lang": "he", "region": "MENA",               "hl": "iw",     "gl": "IL", "ceid": "IL:iw",
-      "query": "מחקר עולמי אקלים OR אובדן מגוון ביולוגי OR משבר האקלים נתונים OR זיהום אוויר תמותה" },
-    { "label": "فارسی",              "lang": "fa", "region": "MENA",               "hl": "fa",     "gl": "IR", "ceid": "IR:fa",
-      "query": "\"مطالعه جهانی\" اقلیم OR \"بحران آب\" میلیون OR فرونشست زمین OR آلودگی هوا مرگ" },
-    { "label": "हिन्दी",              "lang": "hi", "region": "South Asia",         "hl": "hi",     "gl": "IN", "ceid": "IN:hi",
-      "query": "वैश्विक अध्ययन जलवायु OR जैव विविधता नुकसान OR वायु प्रदूषण मौतें OR भूजल संकट" },
-    { "label": "বাংলা",              "lang": "bn", "region": "South Asia",         "hl": "bn",     "gl": "BD", "ceid": "BD:bn",
-      "query": "বৈশ্বিক গবেষণা জলবায়ু OR জীববৈচিত্র্য হ্রাস OR বায়ু দূষণ মৃত্যু OR নদী দূষণ" },
-    { "label": "Bahasa Indonesia",  "lang": "id", "region": "Southeast Asia",     "hl": "id",     "gl": "ID", "ceid": "ID:id",
-      "query": "studi global iklim OR kehilangan keanekaragaman hayati OR deforestasi hutan data OR pencemaran sungai skala" },
-    { "label": "Tiếng Việt",        "lang": "vi", "region": "Southeast Asia",     "hl": "vi",     "gl": "VN", "ceid": "VN:vi",
-      "query": "nghiên cứu toàn cầu khí hậu OR mất đa dạng sinh học OR ô nhiễm không khí tử vong OR hạn hán kỷ lục" },
-    { "label": "ไทย",                "lang": "th", "region": "Southeast Asia",     "hl": "th",     "gl": "TH", "ceid": "TH:th",
-      "query": "การศึกษาระดับโลก ภูมิอากาศ OR การสูญเสียความหลากหลายทางชีวภาพ OR มลพิษทางอากาศ เสียชีวิต" },
-    { "label": "日本語",             "lang": "ja", "region": "East Asia",          "hl": "ja",     "gl": "JP", "ceid": "JP:ja",
-      "query": "世界的な研究 気候 OR 生物多様性の損失 OR 転換点 気候 OR 森林減少 世界" },
-    { "label": "简体中文",           "lang": "zh", "region": "East Asia",          "hl": "zh-CN",  "gl": "CN", "ceid": "CN:zh-Hans",
-      "query": "全球研究 气候 OR 生物多样性丧失 OR 临界点 气候 OR 森林砍伐 全球 OR 空气污染 死亡" },
-    { "label": "繁體中文",           "lang": "zh", "region": "East Asia",          "hl": "zh-TW",  "gl": "TW", "ceid": "TW:zh-Hant",
-      "query": "全球研究 氣候 OR 生物多樣性喪失 OR 臨界點 氣候 OR 森林砍伐 全球" },
-    { "label": "한국어",             "lang": "ko", "region": "East Asia",          "hl": "ko",     "gl": "KR", "ceid": "KR:ko",
-      "query": "글로벌 연구 기후 OR 생물다양성 감소 OR 임계점 기후 OR 산림 파괴 세계 OR 대기오염 사망" },
-    { "label": "Kiswahili",         "lang": "sw", "region": "Sub-Saharan Africa", "hl": "sw",     "gl": "KE", "ceid": "KE:sw",
-      "query": "utafiti wa kimataifa hali ya hewa OR upotevu wa bioanuwai OR ukame mkubwa OR uchafuzi wa mazingira" }
+    {
+      "label": "English (US) 1",
+      "lang": "en",
+      "region": "North America",
+      "hl": "en-US",
+      "gl": "US",
+      "ceid": "US:en",
+      "query": "\"global study\" environment OR \"worldwide decline\" species OR \"tipping point\" climate"
+    },
+    {
+      "label": "English (US) 2",
+      "lang": "en",
+      "region": "North America",
+      "hl": "en-US",
+      "gl": "US",
+      "ceid": "US:en",
+      "query": "\"record emissions\" OR deforestation global"
+    },
+    {
+      "label": "English (GB) 1",
+      "lang": "en",
+      "region": "North America",
+      "hl": "en-GB",
+      "gl": "GB",
+      "ceid": "GB:en",
+      "query": "\"global study\" environment OR \"worldwide decline\" species OR \"tipping point\" climate"
+    },
+    {
+      "label": "English (GB) 2",
+      "lang": "en",
+      "region": "North America",
+      "hl": "en-GB",
+      "gl": "GB",
+      "ceid": "GB:en",
+      "query": "\"record emissions\" OR deforestation global"
+    },
+    {
+      "label": "English (IN) 1",
+      "lang": "en",
+      "region": "North America",
+      "hl": "en-IN",
+      "gl": "IN",
+      "ceid": "IN:en",
+      "query": "\"global study\" environment OR \"worldwide decline\" species OR \"tipping point\" climate"
+    },
+    {
+      "label": "English (IN) 2",
+      "lang": "en",
+      "region": "North America",
+      "hl": "en-IN",
+      "gl": "IN",
+      "ceid": "IN:en",
+      "query": "\"record emissions\" OR deforestation global"
+    },
+    {
+      "label": "English (AU) 1",
+      "lang": "en",
+      "region": "North America",
+      "hl": "en-AU",
+      "gl": "AU",
+      "ceid": "AU:en",
+      "query": "\"global study\" environment OR \"worldwide decline\" species OR \"tipping point\" climate"
+    },
+    {
+      "label": "English (AU) 2",
+      "lang": "en",
+      "region": "North America",
+      "hl": "en-AU",
+      "gl": "AU",
+      "ceid": "AU:en",
+      "query": "\"record emissions\" OR deforestation global"
+    },
+    {
+      "label": "English (UK) (US) 1",
+      "lang": "en",
+      "region": "Western Europe",
+      "hl": "en-US",
+      "gl": "US",
+      "ceid": "US:en",
+      "query": "\"global assessment\" nature OR \"climate tipping point\" OR \"biodiversity loss\" study"
+    },
+    {
+      "label": "English (UK) (US) 2",
+      "lang": "en",
+      "region": "Western Europe",
+      "hl": "en-US",
+      "gl": "US",
+      "ceid": "US:en",
+      "query": "\"ocean warming\" record"
+    },
+    {
+      "label": "English (UK) (GB) 1",
+      "lang": "en",
+      "region": "Western Europe",
+      "hl": "en-GB",
+      "gl": "GB",
+      "ceid": "GB:en",
+      "query": "\"global assessment\" nature OR \"climate tipping point\" OR \"biodiversity loss\" study"
+    },
+    {
+      "label": "English (UK) (GB) 2",
+      "lang": "en",
+      "region": "Western Europe",
+      "hl": "en-GB",
+      "gl": "GB",
+      "ceid": "GB:en",
+      "query": "\"ocean warming\" record"
+    },
+    {
+      "label": "English (UK) (IN) 1",
+      "lang": "en",
+      "region": "Western Europe",
+      "hl": "en-IN",
+      "gl": "IN",
+      "ceid": "IN:en",
+      "query": "\"global assessment\" nature OR \"climate tipping point\" OR \"biodiversity loss\" study"
+    },
+    {
+      "label": "English (UK) (IN) 2",
+      "lang": "en",
+      "region": "Western Europe",
+      "hl": "en-IN",
+      "gl": "IN",
+      "ceid": "IN:en",
+      "query": "\"ocean warming\" record"
+    },
+    {
+      "label": "English (UK) (AU) 1",
+      "lang": "en",
+      "region": "Western Europe",
+      "hl": "en-AU",
+      "gl": "AU",
+      "ceid": "AU:en",
+      "query": "\"global assessment\" nature OR \"climate tipping point\" OR \"biodiversity loss\" study"
+    },
+    {
+      "label": "English (UK) (AU) 2",
+      "lang": "en",
+      "region": "Western Europe",
+      "hl": "en-AU",
+      "gl": "AU",
+      "ceid": "AU:en",
+      "query": "\"ocean warming\" record"
+    },
+    {
+      "label": "English (India) (US) 1",
+      "lang": "en",
+      "region": "South Asia",
+      "hl": "en-US",
+      "gl": "US",
+      "ceid": "US:en",
+      "query": "\"air pollution\" deaths study OR groundwater depletion India OR heatwave record"
+    },
+    {
+      "label": "English (India) (US) 2",
+      "lang": "en",
+      "region": "South Asia",
+      "hl": "en-US",
+      "gl": "US",
+      "ceid": "US:en",
+      "query": "\"climate impact\" millions"
+    },
+    {
+      "label": "English (India) (GB) 1",
+      "lang": "en",
+      "region": "South Asia",
+      "hl": "en-GB",
+      "gl": "GB",
+      "ceid": "GB:en",
+      "query": "\"air pollution\" deaths study OR groundwater depletion India OR heatwave record"
+    },
+    {
+      "label": "English (India) (GB) 2",
+      "lang": "en",
+      "region": "South Asia",
+      "hl": "en-GB",
+      "gl": "GB",
+      "ceid": "GB:en",
+      "query": "\"climate impact\" millions"
+    },
+    {
+      "label": "English (India) (IN) 1",
+      "lang": "en",
+      "region": "South Asia",
+      "hl": "en-IN",
+      "gl": "IN",
+      "ceid": "IN:en",
+      "query": "\"air pollution\" deaths study OR groundwater depletion India OR heatwave record"
+    },
+    {
+      "label": "English (India) (IN) 2",
+      "lang": "en",
+      "region": "South Asia",
+      "hl": "en-IN",
+      "gl": "IN",
+      "ceid": "IN:en",
+      "query": "\"climate impact\" millions"
+    },
+    {
+      "label": "English (India) (AU) 1",
+      "lang": "en",
+      "region": "South Asia",
+      "hl": "en-AU",
+      "gl": "AU",
+      "ceid": "AU:en",
+      "query": "\"air pollution\" deaths study OR groundwater depletion India OR heatwave record"
+    },
+    {
+      "label": "English (India) (AU) 2",
+      "lang": "en",
+      "region": "South Asia",
+      "hl": "en-AU",
+      "gl": "AU",
+      "ceid": "AU:en",
+      "query": "\"climate impact\" millions"
+    },
+    {
+      "label": "English (Aus) (US) 1",
+      "lang": "en",
+      "region": "Oceania",
+      "hl": "en-US",
+      "gl": "US",
+      "ceid": "US:en",
+      "query": "\"coral bleaching\" reef OR \"species extinction\" report OR \"climate report\" warming"
+    },
+    {
+      "label": "English (Aus) (US) 2",
+      "lang": "en",
+      "region": "Oceania",
+      "hl": "en-US",
+      "gl": "US",
+      "ceid": "US:en",
+      "query": "\"ocean heat\" record"
+    },
+    {
+      "label": "English (Aus) (GB) 1",
+      "lang": "en",
+      "region": "Oceania",
+      "hl": "en-GB",
+      "gl": "GB",
+      "ceid": "GB:en",
+      "query": "\"coral bleaching\" reef OR \"species extinction\" report OR \"climate report\" warming"
+    },
+    {
+      "label": "English (Aus) (GB) 2",
+      "lang": "en",
+      "region": "Oceania",
+      "hl": "en-GB",
+      "gl": "GB",
+      "ceid": "GB:en",
+      "query": "\"ocean heat\" record"
+    },
+    {
+      "label": "English (Aus) (IN) 1",
+      "lang": "en",
+      "region": "Oceania",
+      "hl": "en-IN",
+      "gl": "IN",
+      "ceid": "IN:en",
+      "query": "\"coral bleaching\" reef OR \"species extinction\" report OR \"climate report\" warming"
+    },
+    {
+      "label": "English (Aus) (IN) 2",
+      "lang": "en",
+      "region": "Oceania",
+      "hl": "en-IN",
+      "gl": "IN",
+      "ceid": "IN:en",
+      "query": "\"ocean heat\" record"
+    },
+    {
+      "label": "English (Aus) (AU) 1",
+      "lang": "en",
+      "region": "Oceania",
+      "hl": "en-AU",
+      "gl": "AU",
+      "ceid": "AU:en",
+      "query": "\"coral bleaching\" reef OR \"species extinction\" report OR \"climate report\" warming"
+    },
+    {
+      "label": "English (Aus) (AU) 2",
+      "lang": "en",
+      "region": "Oceania",
+      "hl": "en-AU",
+      "gl": "AU",
+      "ceid": "AU:en",
+      "query": "\"ocean heat\" record"
+    },
+    {
+      "label": "English (S. Africa) (ZA) 1",
+      "lang": "en",
+      "region": "Sub-Saharan Africa",
+      "hl": "en-ZA",
+      "gl": "ZA",
+      "ceid": "ZA:en",
+      "query": "drought crisis millions OR \"water scarcity\" Africa OR mining pollution communities"
+    },
+    {
+      "label": "English (S. Africa) (ZA) 2",
+      "lang": "en",
+      "region": "Sub-Saharan Africa",
+      "hl": "en-ZA",
+      "gl": "ZA",
+      "ceid": "ZA:en",
+      "query": "\"climate impact\" study"
+    },
+    {
+      "label": "English (S. Africa) (US) 1",
+      "lang": "en",
+      "region": "Sub-Saharan Africa",
+      "hl": "en-US",
+      "gl": "US",
+      "ceid": "US:en",
+      "query": "drought crisis millions OR \"water scarcity\" Africa OR mining pollution communities"
+    },
+    {
+      "label": "English (S. Africa) (US) 2",
+      "lang": "en",
+      "region": "Sub-Saharan Africa",
+      "hl": "en-US",
+      "gl": "US",
+      "ceid": "US:en",
+      "query": "\"climate impact\" study"
+    },
+    {
+      "label": "English (S. Africa) (GB) 1",
+      "lang": "en",
+      "region": "Sub-Saharan Africa",
+      "hl": "en-GB",
+      "gl": "GB",
+      "ceid": "GB:en",
+      "query": "drought crisis millions OR \"water scarcity\" Africa OR mining pollution communities"
+    },
+    {
+      "label": "English (S. Africa) (GB) 2",
+      "lang": "en",
+      "region": "Sub-Saharan Africa",
+      "hl": "en-GB",
+      "gl": "GB",
+      "ceid": "GB:en",
+      "query": "\"climate impact\" study"
+    },
+    {
+      "label": "English (S. Africa) (IN) 1",
+      "lang": "en",
+      "region": "Sub-Saharan Africa",
+      "hl": "en-IN",
+      "gl": "IN",
+      "ceid": "IN:en",
+      "query": "drought crisis millions OR \"water scarcity\" Africa OR mining pollution communities"
+    },
+    {
+      "label": "English (S. Africa) (IN) 2",
+      "lang": "en",
+      "region": "Sub-Saharan Africa",
+      "hl": "en-IN",
+      "gl": "IN",
+      "ceid": "IN:en",
+      "query": "\"climate impact\" study"
+    },
+    {
+      "label": "English (Nigeria) (NG) 1",
+      "lang": "en",
+      "region": "Sub-Saharan Africa",
+      "hl": "en-NG",
+      "gl": "NG",
+      "ceid": "NG:en",
+      "query": "\"oil spill\" Niger Delta OR desertification Sahel OR flooding displaced thousands"
+    },
+    {
+      "label": "English (Nigeria) (NG) 2",
+      "lang": "en",
+      "region": "Sub-Saharan Africa",
+      "hl": "en-NG",
+      "gl": "NG",
+      "ceid": "NG:en",
+      "query": "\"gas flaring\""
+    },
+    {
+      "label": "English (Nigeria) (US) 1",
+      "lang": "en",
+      "region": "Sub-Saharan Africa",
+      "hl": "en-US",
+      "gl": "US",
+      "ceid": "US:en",
+      "query": "\"oil spill\" Niger Delta OR desertification Sahel OR flooding displaced thousands"
+    },
+    {
+      "label": "English (Nigeria) (US) 2",
+      "lang": "en",
+      "region": "Sub-Saharan Africa",
+      "hl": "en-US",
+      "gl": "US",
+      "ceid": "US:en",
+      "query": "\"gas flaring\""
+    },
+    {
+      "label": "English (Nigeria) (GB) 1",
+      "lang": "en",
+      "region": "Sub-Saharan Africa",
+      "hl": "en-GB",
+      "gl": "GB",
+      "ceid": "GB:en",
+      "query": "\"oil spill\" Niger Delta OR desertification Sahel OR flooding displaced thousands"
+    },
+    {
+      "label": "English (Nigeria) (GB) 2",
+      "lang": "en",
+      "region": "Sub-Saharan Africa",
+      "hl": "en-GB",
+      "gl": "GB",
+      "ceid": "GB:en",
+      "query": "\"gas flaring\""
+    },
+    {
+      "label": "English (Nigeria) (IN) 1",
+      "lang": "en",
+      "region": "Sub-Saharan Africa",
+      "hl": "en-IN",
+      "gl": "IN",
+      "ceid": "IN:en",
+      "query": "\"oil spill\" Niger Delta OR desertification Sahel OR flooding displaced thousands"
+    },
+    {
+      "label": "English (Nigeria) (IN) 2",
+      "lang": "en",
+      "region": "Sub-Saharan Africa",
+      "hl": "en-IN",
+      "gl": "IN",
+      "ceid": "IN:en",
+      "query": "\"gas flaring\""
+    },
+    {
+      "label": "English (Kenya) (KE) 1",
+      "lang": "en",
+      "region": "Sub-Saharan Africa",
+      "hl": "en-KE",
+      "gl": "KE",
+      "ceid": "KE:en",
+      "query": "drought Horn of Africa millions OR deforestation Congo Basin OR \"climate finance\" Africa"
+    },
+    {
+      "label": "English (Kenya) (KE) 2",
+      "lang": "en",
+      "region": "Sub-Saharan Africa",
+      "hl": "en-KE",
+      "gl": "KE",
+      "ceid": "KE:en",
+      "query": "wildlife decline report"
+    },
+    {
+      "label": "English (Kenya) (US) 1",
+      "lang": "en",
+      "region": "Sub-Saharan Africa",
+      "hl": "en-US",
+      "gl": "US",
+      "ceid": "US:en",
+      "query": "drought Horn of Africa millions OR deforestation Congo Basin OR \"climate finance\" Africa"
+    },
+    {
+      "label": "English (Kenya) (US) 2",
+      "lang": "en",
+      "region": "Sub-Saharan Africa",
+      "hl": "en-US",
+      "gl": "US",
+      "ceid": "US:en",
+      "query": "wildlife decline report"
+    },
+    {
+      "label": "English (Kenya) (GB) 1",
+      "lang": "en",
+      "region": "Sub-Saharan Africa",
+      "hl": "en-GB",
+      "gl": "GB",
+      "ceid": "GB:en",
+      "query": "drought Horn of Africa millions OR deforestation Congo Basin OR \"climate finance\" Africa"
+    },
+    {
+      "label": "English (Kenya) (GB) 2",
+      "lang": "en",
+      "region": "Sub-Saharan Africa",
+      "hl": "en-GB",
+      "gl": "GB",
+      "ceid": "GB:en",
+      "query": "wildlife decline report"
+    },
+    {
+      "label": "English (Kenya) (IN) 1",
+      "lang": "en",
+      "region": "Sub-Saharan Africa",
+      "hl": "en-IN",
+      "gl": "IN",
+      "ceid": "IN:en",
+      "query": "drought Horn of Africa millions OR deforestation Congo Basin OR \"climate finance\" Africa"
+    },
+    {
+      "label": "English (Kenya) (IN) 2",
+      "lang": "en",
+      "region": "Sub-Saharan Africa",
+      "hl": "en-IN",
+      "gl": "IN",
+      "ceid": "IN:en",
+      "query": "wildlife decline report"
+    },
+    {
+      "label": "Español (ES) 1",
+      "lang": "es",
+      "region": "Western Europe",
+      "hl": "es",
+      "gl": "ES",
+      "ceid": "ES:es",
+      "query": "\"estudio global\" clima OR \"pérdida de biodiversidad\" OR \"punto de inflexión\" climático"
+    },
+    {
+      "label": "Español (ES) 2",
+      "lang": "es",
+      "region": "Western Europe",
+      "hl": "es",
+      "gl": "ES",
+      "ceid": "ES:es",
+      "query": "sequía récord"
+    },
+    {
+      "label": "Español (MX) 1",
+      "lang": "es",
+      "region": "Western Europe",
+      "hl": "es-419",
+      "gl": "MX",
+      "ceid": "MX:es-419",
+      "query": "\"estudio global\" clima OR \"pérdida de biodiversidad\" OR \"punto de inflexión\" climático"
+    },
+    {
+      "label": "Español (MX) 2",
+      "lang": "es",
+      "region": "Western Europe",
+      "hl": "es-419",
+      "gl": "MX",
+      "ceid": "MX:es-419",
+      "query": "sequía récord"
+    },
+    {
+      "label": "Español (AR) 1",
+      "lang": "es",
+      "region": "Western Europe",
+      "hl": "es-419",
+      "gl": "AR",
+      "ceid": "AR:es-419",
+      "query": "\"estudio global\" clima OR \"pérdida de biodiversidad\" OR \"punto de inflexión\" climático"
+    },
+    {
+      "label": "Español (AR) 2",
+      "lang": "es",
+      "region": "Western Europe",
+      "hl": "es-419",
+      "gl": "AR",
+      "ceid": "AR:es-419",
+      "query": "sequía récord"
+    },
+    {
+      "label": "Español (CO) 1",
+      "lang": "es",
+      "region": "Western Europe",
+      "hl": "es-419",
+      "gl": "CO",
+      "ceid": "CO:es-419",
+      "query": "\"estudio global\" clima OR \"pérdida de biodiversidad\" OR \"punto de inflexión\" climático"
+    },
+    {
+      "label": "Español (CO) 2",
+      "lang": "es",
+      "region": "Western Europe",
+      "hl": "es-419",
+      "gl": "CO",
+      "ceid": "CO:es-419",
+      "query": "sequía récord"
+    },
+    {
+      "label": "Español (MX) (ES) 1",
+      "lang": "es",
+      "region": "Latin America",
+      "hl": "es",
+      "gl": "ES",
+      "ceid": "ES:es",
+      "query": "deforestación Amazonía OR contaminación minera ríos OR \"crisis del agua\" millones"
+    },
+    {
+      "label": "Español (MX) (ES) 2",
+      "lang": "es",
+      "region": "Latin America",
+      "hl": "es",
+      "gl": "ES",
+      "ceid": "ES:es",
+      "query": "\"cambio climático\" estudio"
+    },
+    {
+      "label": "Español (MX) (MX) 1",
+      "lang": "es",
+      "region": "Latin America",
+      "hl": "es-419",
+      "gl": "MX",
+      "ceid": "MX:es-419",
+      "query": "deforestación Amazonía OR contaminación minera ríos OR \"crisis del agua\" millones"
+    },
+    {
+      "label": "Español (MX) (MX) 2",
+      "lang": "es",
+      "region": "Latin America",
+      "hl": "es-419",
+      "gl": "MX",
+      "ceid": "MX:es-419",
+      "query": "\"cambio climático\" estudio"
+    },
+    {
+      "label": "Español (MX) (AR) 1",
+      "lang": "es",
+      "region": "Latin America",
+      "hl": "es-419",
+      "gl": "AR",
+      "ceid": "AR:es-419",
+      "query": "deforestación Amazonía OR contaminación minera ríos OR \"crisis del agua\" millones"
+    },
+    {
+      "label": "Español (MX) (AR) 2",
+      "lang": "es",
+      "region": "Latin America",
+      "hl": "es-419",
+      "gl": "AR",
+      "ceid": "AR:es-419",
+      "query": "\"cambio climático\" estudio"
+    },
+    {
+      "label": "Español (MX) (CO) 1",
+      "lang": "es",
+      "region": "Latin America",
+      "hl": "es-419",
+      "gl": "CO",
+      "ceid": "CO:es-419",
+      "query": "deforestación Amazonía OR contaminación minera ríos OR \"crisis del agua\" millones"
+    },
+    {
+      "label": "Español (MX) (CO) 2",
+      "lang": "es",
+      "region": "Latin America",
+      "hl": "es-419",
+      "gl": "CO",
+      "ceid": "CO:es-419",
+      "query": "\"cambio climático\" estudio"
+    },
+    {
+      "label": "Português (BR) 1",
+      "lang": "pt",
+      "region": "Latin America",
+      "hl": "pt-BR",
+      "gl": "BR",
+      "ceid": "BR:pt-419",
+      "query": "desmatamento Amazônia dados OR \"perda de biodiversidade\" OR contaminação mercúrio garimpo"
+    },
+    {
+      "label": "Português (BR) 2",
+      "lang": "pt",
+      "region": "Latin America",
+      "hl": "pt-BR",
+      "gl": "BR",
+      "ceid": "BR:pt-419",
+      "query": "seca recorde"
+    },
+    {
+      "label": "Português (PT) 1",
+      "lang": "pt",
+      "region": "Latin America",
+      "hl": "pt-BR",
+      "gl": "PT",
+      "ceid": "PT:pt-150",
+      "query": "desmatamento Amazônia dados OR \"perda de biodiversidade\" OR contaminação mercúrio garimpo"
+    },
+    {
+      "label": "Português (PT) 2",
+      "lang": "pt",
+      "region": "Latin America",
+      "hl": "pt-BR",
+      "gl": "PT",
+      "ceid": "PT:pt-150",
+      "query": "seca recorde"
+    },
+    {
+      "label": "Português (AO) 1",
+      "lang": "pt",
+      "region": "Latin America",
+      "hl": "pt-BR",
+      "gl": "AO",
+      "ceid": "AO:pt-150",
+      "query": "desmatamento Amazônia dados OR \"perda de biodiversidade\" OR contaminação mercúrio garimpo"
+    },
+    {
+      "label": "Português (AO) 2",
+      "lang": "pt",
+      "region": "Latin America",
+      "hl": "pt-BR",
+      "gl": "AO",
+      "ceid": "AO:pt-150",
+      "query": "seca recorde"
+    },
+    {
+      "label": "Français (FR) 1",
+      "lang": "fr",
+      "region": "Western Europe",
+      "hl": "fr",
+      "gl": "FR",
+      "ceid": "FR:fr",
+      "query": "\"étude mondiale\" climat OR \"effondrement de la biodiversité\" OR \"point de bascule\" climatique"
+    },
+    {
+      "label": "Français (FR) 2",
+      "lang": "fr",
+      "region": "Western Europe",
+      "hl": "fr",
+      "gl": "FR",
+      "ceid": "FR:fr",
+      "query": "déforestation mondiale"
+    },
+    {
+      "label": "Français (BE) 1",
+      "lang": "fr",
+      "region": "Western Europe",
+      "hl": "fr",
+      "gl": "BE",
+      "ceid": "BE:fr",
+      "query": "\"étude mondiale\" climat OR \"effondrement de la biodiversité\" OR \"point de bascule\" climatique"
+    },
+    {
+      "label": "Français (BE) 2",
+      "lang": "fr",
+      "region": "Western Europe",
+      "hl": "fr",
+      "gl": "BE",
+      "ceid": "BE:fr",
+      "query": "déforestation mondiale"
+    },
+    {
+      "label": "Français (CA) 1",
+      "lang": "fr",
+      "region": "Western Europe",
+      "hl": "fr",
+      "gl": "CA",
+      "ceid": "CA:fr",
+      "query": "\"étude mondiale\" climat OR \"effondrement de la biodiversité\" OR \"point de bascule\" climatique"
+    },
+    {
+      "label": "Français (CA) 2",
+      "lang": "fr",
+      "region": "Western Europe",
+      "hl": "fr",
+      "gl": "CA",
+      "ceid": "CA:fr",
+      "query": "déforestation mondiale"
+    },
+    {
+      "label": "Français (SN) 1",
+      "lang": "fr",
+      "region": "Western Europe",
+      "hl": "fr",
+      "gl": "SN",
+      "ceid": "SN:fr",
+      "query": "\"étude mondiale\" climat OR \"effondrement de la biodiversité\" OR \"point de bascule\" climatique"
+    },
+    {
+      "label": "Français (SN) 2",
+      "lang": "fr",
+      "region": "Western Europe",
+      "hl": "fr",
+      "gl": "SN",
+      "ceid": "SN:fr",
+      "query": "déforestation mondiale"
+    },
+    {
+      "label": "Deutsch (DE) 1",
+      "lang": "de",
+      "region": "Western Europe",
+      "hl": "de",
+      "gl": "DE",
+      "ceid": "DE:de",
+      "query": "\"weltweite Studie\" Klima OR Artensterben Bericht OR Kipppunkt Klima"
+    },
+    {
+      "label": "Deutsch (DE) 2",
+      "lang": "de",
+      "region": "Western Europe",
+      "hl": "de",
+      "gl": "DE",
+      "ceid": "DE:de",
+      "query": "Entwaldung weltweit"
+    },
+    {
+      "label": "Deutsch (AT) 1",
+      "lang": "de",
+      "region": "Western Europe",
+      "hl": "de",
+      "gl": "AT",
+      "ceid": "AT:de",
+      "query": "\"weltweite Studie\" Klima OR Artensterben Bericht OR Kipppunkt Klima"
+    },
+    {
+      "label": "Deutsch (AT) 2",
+      "lang": "de",
+      "region": "Western Europe",
+      "hl": "de",
+      "gl": "AT",
+      "ceid": "AT:de",
+      "query": "Entwaldung weltweit"
+    },
+    {
+      "label": "Deutsch (CH) 1",
+      "lang": "de",
+      "region": "Western Europe",
+      "hl": "de",
+      "gl": "CH",
+      "ceid": "CH:de",
+      "query": "\"weltweite Studie\" Klima OR Artensterben Bericht OR Kipppunkt Klima"
+    },
+    {
+      "label": "Deutsch (CH) 2",
+      "lang": "de",
+      "region": "Western Europe",
+      "hl": "de",
+      "gl": "CH",
+      "ceid": "CH:de",
+      "query": "Entwaldung weltweit"
+    },
+    {
+      "label": "Italiano (IT) 1",
+      "lang": "it",
+      "region": "Western Europe",
+      "hl": "it",
+      "gl": "IT",
+      "ceid": "IT:it",
+      "query": "\"studio globale\" clima OR \"perdita di biodiversità\" OR \"punto di non ritorno\" clima"
+    },
+    {
+      "label": "Italiano (IT) 2",
+      "lang": "it",
+      "region": "Western Europe",
+      "hl": "it",
+      "gl": "IT",
+      "ceid": "IT:it",
+      "query": "siccità record"
+    },
+    {
+      "label": "Italiano (CH) 1",
+      "lang": "it",
+      "region": "Western Europe",
+      "hl": "it",
+      "gl": "CH",
+      "ceid": "CH:it",
+      "query": "\"studio globale\" clima OR \"perdita di biodiversità\" OR \"punto di non ritorno\" clima"
+    },
+    {
+      "label": "Italiano (CH) 2",
+      "lang": "it",
+      "region": "Western Europe",
+      "hl": "it",
+      "gl": "CH",
+      "ceid": "CH:it",
+      "query": "siccità record"
+    },
+    {
+      "label": "Nederlands (NL) 1",
+      "lang": "nl",
+      "region": "Western Europe",
+      "hl": "nl",
+      "gl": "NL",
+      "ceid": "NL:nl",
+      "query": "wereldwijde studie klimaat OR biodiversiteitsverlies OR kantelpunt klimaat"
+    },
+    {
+      "label": "Nederlands (NL) 2",
+      "lang": "nl",
+      "region": "Western Europe",
+      "hl": "nl",
+      "gl": "NL",
+      "ceid": "NL:nl",
+      "query": "ontbossing wereldwijd"
+    },
+    {
+      "label": "Nederlands (BE) 1",
+      "lang": "nl",
+      "region": "Western Europe",
+      "hl": "nl",
+      "gl": "BE",
+      "ceid": "BE:nl",
+      "query": "wereldwijde studie klimaat OR biodiversiteitsverlies OR kantelpunt klimaat"
+    },
+    {
+      "label": "Nederlands (BE) 2",
+      "lang": "nl",
+      "region": "Western Europe",
+      "hl": "nl",
+      "gl": "BE",
+      "ceid": "BE:nl",
+      "query": "ontbossing wereldwijd"
+    },
+    {
+      "label": "Svenska 1",
+      "lang": "sv",
+      "region": "Western Europe",
+      "hl": "sv",
+      "gl": "SE",
+      "ceid": "SE:sv",
+      "query": "global studie klimat OR artdöd rapport OR tröskelpunkt klimat"
+    },
+    {
+      "label": "Svenska 2",
+      "lang": "sv",
+      "region": "Western Europe",
+      "hl": "sv",
+      "gl": "SE",
+      "ceid": "SE:sv",
+      "query": "avskogning världen"
+    },
+    {
+      "label": "Ελληνικά 1",
+      "lang": "el",
+      "region": "Western Europe",
+      "hl": "el",
+      "gl": "GR",
+      "ceid": "GR:el",
+      "query": "παγκόσμια μελέτη κλίμα OR απώλεια βιοποικιλότητας OR σημείο καμπής κλίμα"
+    },
+    {
+      "label": "Ελληνικά 2",
+      "lang": "el",
+      "region": "Western Europe",
+      "hl": "el",
+      "gl": "GR",
+      "ceid": "GR:el",
+      "query": "ξηρασία ρεκόρ"
+    },
+    {
+      "label": "Polski 1",
+      "lang": "pl",
+      "region": "Eastern Europe",
+      "hl": "pl",
+      "gl": "PL",
+      "ceid": "PL:pl",
+      "query": "globalne badanie klimat OR utrata bioróżnorodności OR punkt krytyczny klimat"
+    },
+    {
+      "label": "Polski 2",
+      "lang": "pl",
+      "region": "Eastern Europe",
+      "hl": "pl",
+      "gl": "PL",
+      "ceid": "PL:pl",
+      "query": "wylesianie świat"
+    },
+    {
+      "label": "Русский (RU) 1",
+      "lang": "ru",
+      "region": "Eastern Europe",
+      "hl": "ru",
+      "gl": "RU",
+      "ceid": "RU:ru",
+      "query": "глобальное исследование климат OR утрата биоразнообразия OR точка невозврата климат"
+    },
+    {
+      "label": "Русский (RU) 2",
+      "lang": "ru",
+      "region": "Eastern Europe",
+      "hl": "ru",
+      "gl": "RU",
+      "ceid": "RU:ru",
+      "query": "вырубка лесов мир"
+    },
+    {
+      "label": "Русский (KZ) 1",
+      "lang": "ru",
+      "region": "Eastern Europe",
+      "hl": "ru",
+      "gl": "KZ",
+      "ceid": "KZ:ru",
+      "query": "глобальное исследование климат OR утрата биоразнообразия OR точка невозврата климат"
+    },
+    {
+      "label": "Русский (KZ) 2",
+      "lang": "ru",
+      "region": "Eastern Europe",
+      "hl": "ru",
+      "gl": "KZ",
+      "ceid": "KZ:ru",
+      "query": "вырубка лесов мир"
+    },
+    {
+      "label": "Русский (BY) 1",
+      "lang": "ru",
+      "region": "Eastern Europe",
+      "hl": "ru",
+      "gl": "BY",
+      "ceid": "BY:ru",
+      "query": "глобальное исследование климат OR утрата биоразнообразия OR точка невозврата климат"
+    },
+    {
+      "label": "Русский (BY) 2",
+      "lang": "ru",
+      "region": "Eastern Europe",
+      "hl": "ru",
+      "gl": "BY",
+      "ceid": "BY:ru",
+      "query": "вырубка лесов мир"
+    },
+    {
+      "label": "Українська 1",
+      "lang": "uk",
+      "region": "Eastern Europe",
+      "hl": "uk",
+      "gl": "UA",
+      "ceid": "UA:uk",
+      "query": "глобальне дослідження клімат OR втрата біорізноманіття OR екологічна катастрофа"
+    },
+    {
+      "label": "Українська 2",
+      "lang": "uk",
+      "region": "Eastern Europe",
+      "hl": "uk",
+      "gl": "UA",
+      "ceid": "UA:uk",
+      "query": "забруднення масштаб"
+    },
+    {
+      "label": "Türkçe 1",
+      "lang": "tr",
+      "region": "MENA",
+      "hl": "tr",
+      "gl": "TR",
+      "ceid": "TR:tr",
+      "query": "küresel araştırma iklim OR biyoçeşitlilik kaybı OR kritik eşik iklim"
+    },
+    {
+      "label": "Türkçe 2",
+      "lang": "tr",
+      "region": "MENA",
+      "hl": "tr",
+      "gl": "TR",
+      "ceid": "TR:tr",
+      "query": "kuraklık rekor"
+    },
+    {
+      "label": "العربية (EG) 1",
+      "lang": "ar",
+      "region": "MENA",
+      "hl": "ar",
+      "gl": "EG",
+      "ceid": "EG:ar",
+      "query": "\"دراسة عالمية\" مناخ OR \"فقدان التنوع البيولوجي\" OR \"ندرة المياه\" ملايين"
+    },
+    {
+      "label": "العربية (EG) 2",
+      "lang": "ar",
+      "region": "MENA",
+      "hl": "ar",
+      "gl": "EG",
+      "ceid": "EG:ar",
+      "query": "التصحر"
+    },
+    {
+      "label": "العربية (SA) 1",
+      "lang": "ar",
+      "region": "MENA",
+      "hl": "ar",
+      "gl": "SA",
+      "ceid": "SA:ar",
+      "query": "\"دراسة عالمية\" مناخ OR \"فقدان التنوع البيولوجي\" OR \"ندرة المياه\" ملايين"
+    },
+    {
+      "label": "العربية (SA) 2",
+      "lang": "ar",
+      "region": "MENA",
+      "hl": "ar",
+      "gl": "SA",
+      "ceid": "SA:ar",
+      "query": "التصحر"
+    },
+    {
+      "label": "العربية (AE) 1",
+      "lang": "ar",
+      "region": "MENA",
+      "hl": "ar",
+      "gl": "AE",
+      "ceid": "AE:ar",
+      "query": "\"دراسة عالمية\" مناخ OR \"فقدان التنوع البيولوجي\" OR \"ندرة المياه\" ملايين"
+    },
+    {
+      "label": "العربية (AE) 2",
+      "lang": "ar",
+      "region": "MENA",
+      "hl": "ar",
+      "gl": "AE",
+      "ceid": "AE:ar",
+      "query": "التصحر"
+    },
+    {
+      "label": "العربية (MA) 1",
+      "lang": "ar",
+      "region": "MENA",
+      "hl": "ar",
+      "gl": "MA",
+      "ceid": "MA:ar",
+      "query": "\"دراسة عالمية\" مناخ OR \"فقدان التنوع البيولوجي\" OR \"ندرة المياه\" ملايين"
+    },
+    {
+      "label": "العربية (MA) 2",
+      "lang": "ar",
+      "region": "MENA",
+      "hl": "ar",
+      "gl": "MA",
+      "ceid": "MA:ar",
+      "query": "التصحر"
+    },
+    {
+      "label": "עברית 1",
+      "lang": "he",
+      "region": "MENA",
+      "hl": "iw",
+      "gl": "IL",
+      "ceid": "IL:iw",
+      "query": "מחקר עולמי אקלים OR אובדן מגוון ביולוגי OR משבר האקלים נתונים"
+    },
+    {
+      "label": "עברית 2",
+      "lang": "he",
+      "region": "MENA",
+      "hl": "iw",
+      "gl": "IL",
+      "ceid": "IL:iw",
+      "query": "זיהום אוויר תמותה"
+    },
+    {
+      "label": "فارسی 1",
+      "lang": "fa",
+      "region": "MENA",
+      "hl": "fa",
+      "gl": "IR",
+      "ceid": "IR:fa",
+      "query": "\"مطالعه جهانی\" اقلیم OR \"بحران آب\" میلیون OR فرونشست زمین"
+    },
+    {
+      "label": "فارسی 2",
+      "lang": "fa",
+      "region": "MENA",
+      "hl": "fa",
+      "gl": "IR",
+      "ceid": "IR:fa",
+      "query": "آلودگی هوا مرگ"
+    },
+    {
+      "label": "हिन्दी 1",
+      "lang": "hi",
+      "region": "South Asia",
+      "hl": "hi",
+      "gl": "IN",
+      "ceid": "IN:hi",
+      "query": "वैश्विक अध्ययन जलवायु OR जैव विविधता नुकसान OR वायु प्रदूषण मौतें"
+    },
+    {
+      "label": "हिन्दी 2",
+      "lang": "hi",
+      "region": "South Asia",
+      "hl": "hi",
+      "gl": "IN",
+      "ceid": "IN:hi",
+      "query": "भूजल संकट"
+    },
+    {
+      "label": "বাংলা (BD) 1",
+      "lang": "bn",
+      "region": "South Asia",
+      "hl": "bn",
+      "gl": "BD",
+      "ceid": "BD:bn",
+      "query": "বৈশ্বিক গবেষণা জলবায়ু OR জীববৈচিত্র্য হ্রাস OR বায়ু দূষণ মৃত্যু"
+    },
+    {
+      "label": "বাংলা (BD) 2",
+      "lang": "bn",
+      "region": "South Asia",
+      "hl": "bn",
+      "gl": "BD",
+      "ceid": "BD:bn",
+      "query": "নদী দূষণ"
+    },
+    {
+      "label": "বাংলা (IN) 1",
+      "lang": "bn",
+      "region": "South Asia",
+      "hl": "bn",
+      "gl": "IN",
+      "ceid": "IN:bn",
+      "query": "বৈশ্বিক গবেষণা জলবায়ু OR জীববৈচিত্র্য হ্রাস OR বায়ু দূষণ মৃত্যু"
+    },
+    {
+      "label": "বাংলা (IN) 2",
+      "lang": "bn",
+      "region": "South Asia",
+      "hl": "bn",
+      "gl": "IN",
+      "ceid": "IN:bn",
+      "query": "নদী দূষণ"
+    },
+    {
+      "label": "Bahasa Indonesia 1",
+      "lang": "id",
+      "region": "Southeast Asia",
+      "hl": "id",
+      "gl": "ID",
+      "ceid": "ID:id",
+      "query": "studi global iklim OR kehilangan keanekaragaman hayati OR deforestasi hutan data"
+    },
+    {
+      "label": "Bahasa Indonesia 2",
+      "lang": "id",
+      "region": "Southeast Asia",
+      "hl": "id",
+      "gl": "ID",
+      "ceid": "ID:id",
+      "query": "pencemaran sungai skala"
+    },
+    {
+      "label": "Tiếng Việt 1",
+      "lang": "vi",
+      "region": "Southeast Asia",
+      "hl": "vi",
+      "gl": "VN",
+      "ceid": "VN:vi",
+      "query": "nghiên cứu toàn cầu khí hậu OR mất đa dạng sinh học OR ô nhiễm không khí tử vong"
+    },
+    {
+      "label": "Tiếng Việt 2",
+      "lang": "vi",
+      "region": "Southeast Asia",
+      "hl": "vi",
+      "gl": "VN",
+      "ceid": "VN:vi",
+      "query": "hạn hán kỷ lục"
+    },
+    {
+      "label": "ไทย",
+      "lang": "th",
+      "region": "Southeast Asia",
+      "hl": "th",
+      "gl": "TH",
+      "ceid": "TH:th",
+      "query": "การศึกษาระดับโลก ภูมิอากาศ OR การสูญเสียความหลากหลายทางชีวภาพ OR มลพิษทางอากาศ เสียชีวิต"
+    },
+    {
+      "label": "日本語 1",
+      "lang": "ja",
+      "region": "East Asia",
+      "hl": "ja",
+      "gl": "JP",
+      "ceid": "JP:ja",
+      "query": "世界的な研究 気候 OR 生物多様性の損失 OR 転換点 気候"
+    },
+    {
+      "label": "日本語 2",
+      "lang": "ja",
+      "region": "East Asia",
+      "hl": "ja",
+      "gl": "JP",
+      "ceid": "JP:ja",
+      "query": "森林減少 世界"
+    },
+    {
+      "label": "简体中文 (CN) 1",
+      "lang": "zh",
+      "region": "East Asia",
+      "hl": "zh-CN",
+      "gl": "CN",
+      "ceid": "CN:zh-Hans",
+      "query": "全球研究 气候 OR 生物多样性丧失 OR 临界点 气候"
+    },
+    {
+      "label": "简体中文 (CN) 2",
+      "lang": "zh",
+      "region": "East Asia",
+      "hl": "zh-CN",
+      "gl": "CN",
+      "ceid": "CN:zh-Hans",
+      "query": "森林砍伐 全球 OR 空气污染 死亡"
+    },
+    {
+      "label": "简体中文 (TW) 1",
+      "lang": "zh",
+      "region": "East Asia",
+      "hl": "zh-TW",
+      "gl": "TW",
+      "ceid": "TW:zh-Hant",
+      "query": "全球研究 气候 OR 生物多样性丧失 OR 临界点 气候"
+    },
+    {
+      "label": "简体中文 (TW) 2",
+      "lang": "zh",
+      "region": "East Asia",
+      "hl": "zh-TW",
+      "gl": "TW",
+      "ceid": "TW:zh-Hant",
+      "query": "森林砍伐 全球 OR 空气污染 死亡"
+    },
+    {
+      "label": "简体中文 (HK) 1",
+      "lang": "zh",
+      "region": "East Asia",
+      "hl": "zh-HK",
+      "gl": "HK",
+      "ceid": "HK:zh-Hant",
+      "query": "全球研究 气候 OR 生物多样性丧失 OR 临界点 气候"
+    },
+    {
+      "label": "简体中文 (HK) 2",
+      "lang": "zh",
+      "region": "East Asia",
+      "hl": "zh-HK",
+      "gl": "HK",
+      "ceid": "HK:zh-Hant",
+      "query": "森林砍伐 全球 OR 空气污染 死亡"
+    },
+    {
+      "label": "简体中文 (SG) 1",
+      "lang": "zh",
+      "region": "East Asia",
+      "hl": "zh-CN",
+      "gl": "SG",
+      "ceid": "SG:zh-Hans",
+      "query": "全球研究 气候 OR 生物多样性丧失 OR 临界点 气候"
+    },
+    {
+      "label": "简体中文 (SG) 2",
+      "lang": "zh",
+      "region": "East Asia",
+      "hl": "zh-CN",
+      "gl": "SG",
+      "ceid": "SG:zh-Hans",
+      "query": "森林砍伐 全球 OR 空气污染 死亡"
+    },
+    {
+      "label": "繁體中文 (CN) 1",
+      "lang": "zh",
+      "region": "East Asia",
+      "hl": "zh-CN",
+      "gl": "CN",
+      "ceid": "CN:zh-Hans",
+      "query": "全球研究 氣候 OR 生物多樣性喪失 OR 臨界點 氣候"
+    },
+    {
+      "label": "繁體中文 (CN) 2",
+      "lang": "zh",
+      "region": "East Asia",
+      "hl": "zh-CN",
+      "gl": "CN",
+      "ceid": "CN:zh-Hans",
+      "query": "森林砍伐 全球"
+    },
+    {
+      "label": "繁體中文 (TW) 1",
+      "lang": "zh",
+      "region": "East Asia",
+      "hl": "zh-TW",
+      "gl": "TW",
+      "ceid": "TW:zh-Hant",
+      "query": "全球研究 氣候 OR 生物多樣性喪失 OR 臨界點 氣候"
+    },
+    {
+      "label": "繁體中文 (TW) 2",
+      "lang": "zh",
+      "region": "East Asia",
+      "hl": "zh-TW",
+      "gl": "TW",
+      "ceid": "TW:zh-Hant",
+      "query": "森林砍伐 全球"
+    },
+    {
+      "label": "繁體中文 (HK) 1",
+      "lang": "zh",
+      "region": "East Asia",
+      "hl": "zh-HK",
+      "gl": "HK",
+      "ceid": "HK:zh-Hant",
+      "query": "全球研究 氣候 OR 生物多樣性喪失 OR 臨界點 氣候"
+    },
+    {
+      "label": "繁體中文 (HK) 2",
+      "lang": "zh",
+      "region": "East Asia",
+      "hl": "zh-HK",
+      "gl": "HK",
+      "ceid": "HK:zh-Hant",
+      "query": "森林砍伐 全球"
+    },
+    {
+      "label": "繁體中文 (SG) 1",
+      "lang": "zh",
+      "region": "East Asia",
+      "hl": "zh-CN",
+      "gl": "SG",
+      "ceid": "SG:zh-Hans",
+      "query": "全球研究 氣候 OR 生物多樣性喪失 OR 臨界點 氣候"
+    },
+    {
+      "label": "繁體中文 (SG) 2",
+      "lang": "zh",
+      "region": "East Asia",
+      "hl": "zh-CN",
+      "gl": "SG",
+      "ceid": "SG:zh-Hans",
+      "query": "森林砍伐 全球"
+    },
+    {
+      "label": "한국어 1",
+      "lang": "ko",
+      "region": "East Asia",
+      "hl": "ko",
+      "gl": "KR",
+      "ceid": "KR:ko",
+      "query": "글로벌 연구 기후 OR 생물다양성 감소 OR 임계점 기후"
+    },
+    {
+      "label": "한국어 2",
+      "lang": "ko",
+      "region": "East Asia",
+      "hl": "ko",
+      "gl": "KR",
+      "ceid": "KR:ko",
+      "query": "산림 파괴 세계 OR 대기오염 사망"
+    },
+    {
+      "label": "Kiswahili (KE) 1",
+      "lang": "sw",
+      "region": "Sub-Saharan Africa",
+      "hl": "sw",
+      "gl": "KE",
+      "ceid": "KE:sw",
+      "query": "utafiti wa kimataifa hali ya hewa OR upotevu wa bioanuwai OR ukame mkubwa"
+    },
+    {
+      "label": "Kiswahili (KE) 2",
+      "lang": "sw",
+      "region": "Sub-Saharan Africa",
+      "hl": "sw",
+      "gl": "KE",
+      "ceid": "KE:sw",
+      "query": "uchafuzi wa mazingira"
+    },
+    {
+      "label": "Kiswahili (TZ) 1",
+      "lang": "sw",
+      "region": "Sub-Saharan Africa",
+      "hl": "sw",
+      "gl": "TZ",
+      "ceid": "TZ:sw",
+      "query": "utafiti wa kimataifa hali ya hewa OR upotevu wa bioanuwai OR ukame mkubwa"
+    },
+    {
+      "label": "Kiswahili (TZ) 2",
+      "lang": "sw",
+      "region": "Sub-Saharan Africa",
+      "hl": "sw",
+      "gl": "TZ",
+      "ceid": "TZ:sw",
+      "query": "uchafuzi wa mazingira"
+    }
   ],
-
   "scope": [
-    { "label": "Planetary limits",        "lang": "en", "region": "Planet scale", "hl": "en-US", "gl": "US", "ceid": "US:en",
-      "query": "\"planetary boundary\" OR \"tipping point\" earth system OR \"irreversible\" climate threshold OR \"overshoot\" planetary" },
-    { "label": "Global assessments",      "lang": "en", "region": "Planet scale", "hl": "en-US", "gl": "US", "ceid": "US:en",
-      "query": "IPBES report OR IPCC report OR \"Living Planet Report\" OR \"Global Forest Watch\" data OR \"State of the Climate\"" },
-    { "label": "Worldwide declines",      "lang": "en", "region": "Planet scale", "hl": "en-US", "gl": "US", "ceid": "US:en",
-      "query": "\"global decline\" species OR \"freshwater species\" decline OR \"insect decline\" study OR \"soil degradation\" worldwide OR \"pollinator decline\"" },
-    { "label": "Human consequence",       "lang": "en", "region": "Planet scale", "hl": "en-US", "gl": "US", "ceid": "US:en",
-      "query": "\"premature deaths\" pollution study OR \"food security\" climate millions OR \"water crisis\" billions OR climate displacement millions" },
-    { "label": "Toxics at scale",         "lang": "en", "region": "Planet scale", "hl": "en-US", "gl": "US", "ceid": "US:en",
-      "query": "PFAS contamination study OR microplastics human OR pesticide residues global OR \"heavy metals\" contamination population" },
-    { "label": "Who is responsible",      "lang": "en", "region": "Planet scale", "hl": "en-US", "gl": "US", "ceid": "US:en",
-      "query": "\"carbon majors\" OR fossil fuel company lawsuit OR \"greenwashing\" ruling OR corporate deforestation supply chain OR \"ecocide\" law" },
-    { "label": "Océans & forêts",         "lang": "fr", "region": "Planet scale", "hl": "fr",    "gl": "FR", "ceid": "FR:fr",
-      "query": "\"déclin mondial\" espèces OR \"étude internationale\" océan OR déforestation record OR \"seuil critique\" climat" },
-    { "label": "Escala global",           "lang": "es", "region": "Planet scale", "hl": "es-419","gl": "MX", "ceid": "MX:es-419",
-      "query": "\"declive mundial\" especies OR \"estudio internacional\" clima OR \"punto de no retorno\" OR contaminación millones personas" }
+    {
+      "label": "Planetary limits",
+      "lang": "en",
+      "region": "Planet scale",
+      "hl": "en-US",
+      "gl": "US",
+      "ceid": "US:en",
+      "query": "\"planetary boundary\" OR \"tipping point\" earth system OR \"irreversible\" climate threshold OR \"overshoot\" planetary"
+    },
+    {
+      "label": "Global assessments",
+      "lang": "en",
+      "region": "Planet scale",
+      "hl": "en-US",
+      "gl": "US",
+      "ceid": "US:en",
+      "query": "IPBES report OR IPCC report OR \"Living Planet Report\" OR \"Global Forest Watch\" data OR \"State of the Climate\""
+    },
+    {
+      "label": "Worldwide declines",
+      "lang": "en",
+      "region": "Planet scale",
+      "hl": "en-US",
+      "gl": "US",
+      "ceid": "US:en",
+      "query": "\"global decline\" species OR \"freshwater species\" decline OR \"insect decline\" study OR \"soil degradation\" worldwide OR \"pollinator decline\""
+    },
+    {
+      "label": "Human consequence",
+      "lang": "en",
+      "region": "Planet scale",
+      "hl": "en-US",
+      "gl": "US",
+      "ceid": "US:en",
+      "query": "\"premature deaths\" pollution study OR \"food security\" climate millions OR \"water crisis\" billions OR climate displacement millions"
+    },
+    {
+      "label": "Toxics at scale",
+      "lang": "en",
+      "region": "Planet scale",
+      "hl": "en-US",
+      "gl": "US",
+      "ceid": "US:en",
+      "query": "PFAS contamination study OR microplastics human OR pesticide residues global OR \"heavy metals\" contamination population"
+    },
+    {
+      "label": "Who is responsible",
+      "lang": "en",
+      "region": "Planet scale",
+      "hl": "en-US",
+      "gl": "US",
+      "ceid": "US:en",
+      "query": "\"carbon majors\" OR fossil fuel company lawsuit OR \"greenwashing\" ruling OR corporate deforestation supply chain OR \"ecocide\" law"
+    },
+    {
+      "label": "Océans & forêts",
+      "lang": "fr",
+      "region": "Planet scale",
+      "hl": "fr",
+      "gl": "FR",
+      "ceid": "FR:fr",
+      "query": "\"déclin mondial\" espèces OR \"étude internationale\" océan OR déforestation record OR \"seuil critique\" climat"
+    },
+    {
+      "label": "Escala global",
+      "lang": "es",
+      "region": "Planet scale",
+      "hl": "es-419",
+      "gl": "MX",
+      "ceid": "MX:es-419",
+      "query": "\"declive mundial\" especies OR \"estudio internacional\" clima OR \"punto de no retorno\" OR contaminación millones personas"
+    }
   ]
 }
