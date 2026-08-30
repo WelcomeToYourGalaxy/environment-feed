@@ -16,21 +16,21 @@
    Everything scoped to .ef so it can be embedded anywhere.
    ============================================================ */
 .ef {
-    --ink: #eef2f8;
-    --ink-dim: #9aa8bd;
-    --ink-faint: #67748a;
+    --ink: #eae9e6;
+    --ink-dim: #a5a49c;
+    --ink-faint: #75746c;
     --line: rgba(255,255,255,0.10);
     --line-soft: rgba(255,255,255,0.06);
-    --accent: #6fe0b8;     /* green — live dot, title, progress */
-    --flag: #ff6b9d;       /* rose — big-picture marker */
-    --cool: #8fb4ff;
+    --accent: #9bb08a;     /* moss — live dot, title, progress */
+    --flag: #c08a86;       /* clay — well-documented marker */
+    --cool: #8ea2b8;
 
     font-family: 'Marcellus', 'Georgia', serif;
     color: var(--ink);
     background:
-        radial-gradient(1100px 520px at 88% -10%, rgba(40,110,120,0.26), transparent 60%),
-        radial-gradient(760px 420px at 4% 4%, rgba(70,60,140,0.20), transparent 58%),
-        linear-gradient(180deg, #05070e 0%, #0a0f1c 60%, #070b14 100%);
+        radial-gradient(1100px 520px at 88% -10%, rgba(58,74,60,0.30), transparent 60%),
+        radial-gradient(760px 420px at 4% 4%, rgba(74,64,72,0.22), transparent 58%),
+        linear-gradient(180deg, #0c0d0b 0%, #131311 60%, #0e0f0c 100%);
     line-height: 1.45;
     width: 100%;
     height: 100svh;
@@ -50,11 +50,11 @@
 
 /* ---------- Header ---------- */
 .ef-head { flex: 0 0 auto; display: flex; align-items: baseline; justify-content: space-between; gap: clamp(0.8rem, 3vw, 2.2rem); flex-wrap: wrap; max-width: 1320px; width: 100%; margin: 0 auto; }
-.ef-title { font-family: 'Uncial Antiqua', 'Marcellus', 'Georgia', serif; font-weight: 400; font-size: clamp(1.35rem, 2.9vw, 2.25rem); line-height: 1.05; letter-spacing: -0.015em; margin: 0; color: #fbfcfe; display: flex; align-items: center; gap: 0.55rem; }
+.ef-title { font-family: 'Uncial Antiqua', 'Marcellus', 'Georgia', serif; font-weight: 400; font-size: clamp(1.35rem, 2.9vw, 2.25rem); line-height: 1.05; letter-spacing: -0.015em; margin: 0; color: #f7f6f3; display: flex; align-items: center; gap: 0.55rem; }
 .ef-title em { font-style: normal; color: var(--accent); }
-.ef-dot { width: 8px; height: 8px; border-radius: 50%; background: #4ade80; box-shadow: 0 0 0 4px rgba(74,222,128,0.14); animation: ef-pulse 2.6s ease-in-out infinite; flex: 0 0 auto; }
-.ef-dot.idle { background: #94a3b8; box-shadow: 0 0 0 4px rgba(148,163,184,0.12); animation: none; }
-.ef-dot.error { background: #f87171; box-shadow: 0 0 0 4px rgba(248,113,113,0.14); animation: none; }
+.ef-dot { width: 8px; height: 8px; border-radius: 50%; background: #9bb08a; box-shadow: 0 0 0 4px rgba(155,176,138,0.14); animation: ef-pulse 2.6s ease-in-out infinite; flex: 0 0 auto; }
+.ef-dot.idle { background: #8a8880; box-shadow: 0 0 0 4px rgba(138,136,128,0.12); animation: none; }
+.ef-dot.error { background: #c08a86; box-shadow: 0 0 0 4px rgba(192,138,134,0.14); animation: none; }
 @keyframes ef-pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
 .ef-lede { font-size: clamp(0.63rem, 0.85vw, 0.72rem); color: var(--ink-dim); max-width: 62ch; margin: 0; line-height: 1.45; }
 .ef-lede strong { color: var(--ink); font-weight: 500; }
@@ -76,15 +76,15 @@
 .ef-filters { flex: 0 0 auto; display: flex; flex-direction: column; gap: 0.2rem; padding: 0.35rem 0.9rem; border-bottom: 1px solid var(--line-soft); }
 .ef-row { display: flex; align-items: center; gap: 0.35rem; flex-wrap: nowrap; overflow-x: auto; overflow-y: hidden; scrollbar-width: none; padding-bottom: 1px; }
 .ef-row::-webkit-scrollbar { height: 0; }
-.ef-key { position: sticky; left: 0; z-index: 1; flex: 0 0 auto; font-size: 0.53rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-faint); background: linear-gradient(90deg, #0a0f1c 72%, transparent); padding-right: 0.4rem; min-width: 62px; }
+.ef-key { position: sticky; left: 0; z-index: 1; flex: 0 0 auto; font-size: 0.53rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-faint); background: linear-gradient(90deg, #131311 72%, transparent); padding-right: 0.4rem; min-width: 62px; }
 .ef-chip { flex: 0 0 auto; font-family: inherit; font-size: 0.62rem; color: var(--ink-dim); background: rgba(255,255,255,0.03); border: 1px solid var(--line-soft); border-radius: 999px; padding: 0.15rem 0.55rem; cursor: pointer; white-space: nowrap; }
 .ef-chip:hover { color: var(--ink); border-color: rgba(255,255,255,0.22); }
-.ef-chip.on { color: #08111f; background: var(--chipcolor, #e8eef7); border-color: transparent; font-weight: 500; }
+.ef-chip.on { color: #131311; background: var(--chipcolor, #d8d5cd); border-color: transparent; font-weight: 500; }
 .ef-chip .ef-n { opacity: 0.6; margin-left: 0.3rem; font-variant-numeric: tabular-nums; }
 .ef-chip.empty { opacity: 0.4; }
 
 .ef-tr { display: flex; align-items: center; gap: 0.25rem; flex: 0 0 auto; position: sticky;
-    left: 62px; z-index: 2; background: linear-gradient(90deg, var(--rowbg, #0a0f1c) 82%, transparent);
+    left: 62px; z-index: 2; background: linear-gradient(90deg, var(--rowbg, #131311) 82%, transparent);
     padding-right: 0.5rem; }
 .ef-trlabel { font-size: 0.53rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-faint); }
 .ef-tr select { font-family: inherit; font-size: 0.62rem; color: var(--ink);
@@ -100,13 +100,13 @@
 .ef-item:hover { background: rgba(255,255,255,0.035); }
 .ef-item.watch { border-left: 2px solid var(--flag); }
 .ef-meta { display: flex; align-items: center; gap: 0.45rem; flex-wrap: wrap; font-size: 0.57rem; color: var(--ink-faint); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.2rem; }
-.ef-lang { color: #cbd6e6; background: rgba(255,255,255,0.07); border-radius: 4px; padding: 0.06rem 0.32rem; letter-spacing: 0.08em; }
+.ef-lang { color: #d5d2ca; background: rgba(255,255,255,0.07); border-radius: 4px; padding: 0.06rem 0.32rem; letter-spacing: 0.08em; }
 .ef-flag { color: var(--flag); border: 1px solid rgba(255,107,157,0.5); border-radius: 4px; padding: 0.04rem 0.3rem; }
 .ef-scale { display: inline-flex; gap: 2px; align-items: center; }
 .ef-pip { width: 4px; height: 4px; border-radius: 50%; background: rgba(255,255,255,0.18); }
 .ef-pip.on { background: var(--accent); }
 .ef-why { color: var(--ink-faint); letter-spacing: 0.08em; }
-.ef-item-title { font-size: 0.79rem; font-weight: 500; line-height: 1.35; color: #f0f4fa; }
+.ef-item-title { font-size: 0.79rem; font-weight: 500; line-height: 1.35; color: #f2f1ee; }
 .ef-item:hover .ef-item-title { color: var(--cool); }
 .ef-snip { font-size: 0.66rem; line-height: 1.45; color: var(--ink-dim); margin-top: 0.15rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .ef-tags { display: flex; gap: 0.28rem; flex-wrap: wrap; margin-top: 0.3rem; }
@@ -126,7 +126,7 @@
 .ef-src-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 0.1rem 0.9rem; }
 .ef-src { display: flex; justify-content: space-between; gap: 0.5rem; font-size: 0.62rem; color: var(--ink-dim); padding: 0.14rem 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
 .ef-src span:last-child { font-variant-numeric: tabular-nums; color: var(--ink-faint); }
-.ef-src.fail span:last-child { color: #d98a8a; }
+.ef-src.fail span:last-child { color: #c08a86; }
 
 .ef-foot { flex: 0 0 auto; max-width: 1320px; width: 100%; margin: 0 auto; padding-top: 0.4rem; border-top: 1px solid var(--line-soft); font-size: 0.57rem; color: var(--ink-faint); line-height: 1.4; display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
 .ef-foot-tools { display: flex; gap: 0.35rem; flex: 0 0 auto; }
@@ -175,11 +175,12 @@
 .ef-map .leaflet-control-attribution { background: rgba(19,19,17,0.8); color: var(--ink-faint); font-size: 0.5rem; }
 .ef-map .leaflet-control-attribution a { color: var(--ink-dim); }
 
-@media (max-width: 1200px) {
-    .ef-body { flex-direction: column; }
-    .ef-body > .ef-list { flex: 1 1 auto; min-height: 140px; }
-    .ef-map-wrap { flex: 0 0 52%; height: auto; min-height: 200px;
-        border-left: 0; border-top: 1px solid var(--line-soft); } }
+/* The map keeps its column beside the list at every width. Below 900px it
+   narrows rather than moving underneath — there is no companion panel here
+   competing for the height, so nothing has to go below the fold. */
+@media (max-width: 900px) {
+    .ef-map-wrap { flex: 0 0 34%; min-width: 150px; }
+}
 </style>
 </head>
 <body style="margin:0; background:#05070e;">
@@ -316,17 +317,17 @@ const ENDPOINTS = [
 ];
 
 const TOPIC_COLOR = {
-    climate: '#6fd3ff',        // cyan
-    forest: '#79d17f',         // green
-    ocean: '#6f9bff',          // azure
-    freshwater: '#8de6c8',     // mint
-    biodiversity: '#a98cf0',   // violet
-    pollution: '#e0607f',      // rose
-    extraction: '#cf6fd8',     // magenta
-    food: '#4fc4a0',           // teal
-    energy: '#9fb0c8',         // slate
-    health: '#e29ad8',         // pink
-    accountability: '#ff6b9d'  // rose, matching the scale marker
+    climate: '#b58080',        // cyan
+    forest: '#8ea2b8',         // green
+    ocean: '#a8b79a',          // azure
+    freshwater: '#c08a86',     // mint
+    biodiversity: '#a496b8',   // violet
+    pollution: '#a9a49a',      // rose
+    extraction: '#86a5a5',     // magenta
+    food: '#c4a6a2',           // teal
+    energy: '#93a3c0',         // slate
+    health: '#b193a8',         // pink
+    accountability: '#9bb08a'  // rose, matching the scale marker
 };
 const WINDOWS = [
     { id: 'd1', label: '24 hours', ms: 864e5 },
