@@ -181,6 +181,12 @@
 @media (max-width: 900px) {
     .ef-map-wrap { flex: 0 0 34%; min-width: 150px; }
 }
+
+/* A point inferred from the reporting country rather than read out of
+   the story is drawn hollow, so the map never claims to know more than
+   it does. */
+.ef-pin-approx { background: transparent !important;
+    box-shadow: inset 0 0 0 1.5px currentColor; }
 </style>
 </head>
 <body style="margin:0; background:#05070e;">
@@ -516,7 +522,7 @@ async function load() {
         title: i.t, link: i.u, outlet: i.o, lang: i.g, region: i.r,
         kind: i.k, ts: i.d, snippet: i.s, topics: i.x || ['climate'],
         score: i.p || 0,
-        ll: (i.ll && i.ll.length === 2) ? i.ll : null, pin: i.pn || null, why: i.y || [], places: i.w || ['unlocated'], subs: i.sr || ['unlocated'], spots: i.pl || ['unlocated']
+        ll: (i.ll && i.ll.length === 2) ? i.ll : null, pin: i.pn || null, pa: !!i.pa, why: i.y || [], places: i.w || ['unlocated'], subs: i.sr || ['unlocated'], spots: i.pl || ['unlocated']
     }));
     state.bigScore = data.big_picture_score || 4;
     state.topics = data.topics || [];
@@ -1056,11 +1062,12 @@ function renderMapInner(items) {
     // otherwise sit on top of each other, so each is nudged onto a ring around
     // the point — deterministic, so a pin does not move between renders.
     const seenAt = new Map();
-    let mapped = 0, unplaced = 0;
+    let mapped = 0, unplaced = 0, approx = 0;
 
     items.forEach(i => {
         if (!i.ll || i.ll.length !== 2) { unplaced++; return; }
         mapped++;
+        if (i.pa) approx++;
         const key = i.ll[0] + ',' + i.ll[1];
         const n = seenAt.get(key) || 0;
         seenAt.set(key, n + 1);
@@ -1071,6 +1078,7 @@ function renderMapInner(items) {
         const entry = { item: i, at: i.ll.slice(), base: key, dx: off.dx, dy: off.dy,
                         colour: TOPIC_COLOR[i.topics[0]] || '#a49f98',
                         full: i.score >= state.docScore ? 13 : 10,
+                        approx: !!i.pa,
                         dim: n > 0 ? 0.92 : 1 };
         entry.at = fanned(entry);
         const marker = L.marker(entry.at, { icon: pinIcon(entry), title: i.title }).addTo(efLayer);
@@ -1081,7 +1089,8 @@ function renderMapInner(items) {
 
     const c = document.getElementById('efMapCount');
     const u = document.getElementById('efMapUnplaced');
-    if (c) c.textContent = mapped + (mapped === 1 ? ' story mapped' : ' stories mapped');
+    if (c) c.textContent = mapped + (mapped === 1 ? ' story mapped' : ' stories mapped') +
+        (approx ? ' \u00b7 ' + approx + ' by source country' : '');
     if (u) u.textContent = unplaced ? unplaced + ' unplaced' : '';
     state.mapped = mapped;
     state.unplaced = unplaced;
@@ -1164,8 +1173,8 @@ function pinIcon(entry) {
     const thin = size < 9 ? ' ef-pin-sm' : '';
     return L.divIcon({
         className: '',
-        html: '<div class="ef-pin' + thin + '" style="width:' + size + 'px;height:' + size +
-              'px;background:' + entry.colour + ';opacity:' + entry.dim + ';"></div>',
+        html: '<div class="ef-pin' + thin + (entry.approx ? ' ef-pin-approx' : '') + '" style="width:' + size + 'px;height:' + size +
+              'px;background:' + entry.colour + ';color:' + entry.colour + ';opacity:' + entry.dim + ';"></div>',
         iconSize: [size, size], iconAnchor: [size / 2, size / 2]
     });
 }

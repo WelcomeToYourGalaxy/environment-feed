@@ -36,6 +36,20 @@ from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
 from email.utils import parsedate_to_datetime
 
+# The shared gazetteer. Placement used to be each wire's own short country
+# table, which put most of every wire in a counter marked "unplaced"; this is
+# the fleet's common one, and it is optional at import so a harvest still runs
+# if the data file has not been fetched yet.
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+try:
+    import galaxy_places
+    _GAZETTEER = True
+except Exception as _exc:                       # noqa: BLE001
+    print("  ! gazetteer unavailable (%s); falling back to the local table"
+          % _exc, file=sys.stderr)
+    galaxy_places = None
+    _GAZETTEER = False
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 SOURCES_PATH = os.path.join(HERE, "sources_env.json")
 OUT_PATH = os.path.join(HERE, "wire_env.json")
@@ -67,9 +81,24 @@ def build_gnews_url(loc):
     return ("https://news.google.com/rss/search?q=" + urllib.parse.quote(q) +
             "&hl=" + loc["hl"] + "&gl=" + loc["gl"] + "&ceid=" + loc["ceid"])
 
+READ_BUDGET_MIN = 35          # minutes spent reading wires
+
+# The wall-clock budget for reading wires. Past it the remaining sources are
+# recorded unreachable and the harvest finishes on what it has, because the
+# wire is only written at the end of run() and a job killed by the workflow
+# timeout commits nothing at all — which is how a feed gets stuck stale.
+DEADLINE = None
+
+
+def out_of_time():
+    return DEADLINE is not None and time.monotonic() > DEADLINE
+
+
 def fetch(url, tries=3):
     last = None
     for attempt in range(tries):
+        if out_of_time():
+            return None
         try:
             req = urllib.request.Request(url, headers={
                 "User-Agent": USER_AGENT,
@@ -82,6 +111,16 @@ def fetch(url, tries=3):
                 if resp.headers.get("Content-Encoding") == "gzip":
                     raw = gzip.GzipFile(fileobj=io.BytesIO(raw)).read()
                 return raw
+        except urllib.error.HTTPError as exc:
+            last = exc
+            # Being rate-limited or refused is an answer, not a hiccup. Trying
+            # the same query twice more against the same limiter spends eighty
+            # seconds of a worker slot to be told the same thing, and deepens
+            # the throttle for every other query in the run.
+            if exc.code in (403, 429, 451):
+                time.sleep(1.5)
+                break
+            time.sleep(1.5 * (attempt + 1))
         except Exception as exc:                       # noqa: BLE001 — report, don't crash the run
             last = exc
             time.sleep(1.5 * (attempt + 1))
@@ -308,6 +347,31 @@ TOPICS = [
         ("palm oil", ["deforest", "clearing", "plantation", "expansion"]),
         ("fertiliser runoff", None), ("fertilizer runoff", None), ("crop failure*", None),
         ("food security", None), ("harvest loss*", None), ("yield decline", None), ("famine", None),
+        # How the growing is done. The same practices the food wire follows at
+        # the level of a farm or a company, kept here only where the finding is
+        # planetary — the scope gate below still applies, so "soil carbon is
+        # falling across the tropics" is this wire and "a county bans a spray"
+        # is the other one.
+        ("overgrazing", None), ("soil carbon", ["loss", "declin", "falling", "depleted"]),
+        ("salinisation", None), ("salinization", None), ("land degradation", None),
+        ("nitrogen", ["runoff", "pollution", "excess", "planetary boundary", "cycle"]),
+        ("phosphorus", ["runoff", "pollution", "planetary boundary", "depleted"]),
+        ("pesticide*", ["decline", "pollinator", "insect", "contaminat", "banned", "residue"]),
+        ("neonicotinoid*", None), ("pollinator*", ["decline", "loss", "collapse"]),
+        ("insect decline", None), ("insect apocalypse", None),
+        ("manure", ["pollution", "runoff", "discharge"]), ("slurry", ["pollution", "discharge"]),
+        ("antibiotic*", ["livestock", "farm", "resistance"]),
+        ("irrigation", ["depletion", "over-extract", "unsustainable", "drawdown"]),
+        ("cropland expansion", None), ("agricultural expansion", None),
+        ("agriculture intensive", None), ("intensive farming", None),
+        ("dégradation des sols", None), ("degradación del suelo", None),
+        ("degradação do solo", None), ("bodendegradation", None),
+        ("деградация почв", None), ("土壤退化", None), ("土壌劣化", None), ("토양 황폐화", None),
+        ("تدهور التربة", None), ("मृदा क्षरण", None), ("degradasi tanah", None),
+        ("monocultivo", None), ("monoculture intensive", None), ("单一种植", None),
+        ("plaguicidas", ["declive", "polinizador", "contaminaci"]),
+        ("pesticides", ["déclin", "pollinisateur", "contamination"]),
+        ("agrotóxicos", ["contamina", "declínio", "polinizador"]),
         ("sécurité alimentaire", None), ("seguridad alimentaria", None), ("segurança alimentar", None),
         ("ernährungssicherheit", None), ("продовольственная безопасность", None),
         ("粮食安全", None), ("食料安全保障", None), ("식량 안보", None), ("الأمن الغذائي", None),
@@ -679,6 +743,10 @@ FINDING = [
 ]
 
 BLOCK = [
+    # market-research wire copy, which pairs any subject word with a growth
+    # figure and reports nothing about either
+    "市場規模", "分析レポート", "market size", "market report", "cagr",
+    "forecast period", "market outlook", "compound annual growth",
     # lifestyle, commerce and horoscopes wearing green clothing
     "gift guide", "best deals", "prime day", "black friday", "shopping guide", "coupon",
     "recipe", "restaurant review", "fashion week", "sustainable fashion collection",
@@ -698,6 +766,138 @@ SYSTEMIC_C = _compile_all(SYSTEMIC)
 CONSEQUENCE_C = _compile_all(CONSEQUENCE)
 FINDING_C = _compile_all(FINDING)
 BLOCK_C = _compile_all(BLOCK)
+# --------------------------------------------------------------------------
+# The subjects, in the languages this wire already reads.
+#
+# The scale gate here is real and stays: this wire is big-picture findings only,
+# not an article on how the water bugs are doing in Angola. But scale was never
+# what was losing these. The subjects were largely English while the sources
+# answer in Chinese, Portuguese, Arabic and Indonesian, so a Copernicus heat
+# bulletin in Portuguese, a global lake-oxygen atlas in Chinese and a mangrove
+# extent study in Indonesian all cleared the scale bar, matched no subject, and
+# were filed under "climate" by the run loop's default — 87 of 146.
+# --------------------------------------------------------------------------
+LOCAL_TERMS = {
+    "ocean": [
+        ("ocean heat", None), ("sea surface temperature", None), ("marine heatwave", None),
+        ("breaks record", ["ocean", "sea", "temperature"]),
+        ("record high", ["ocean", "sea", "temperature"]), ("record ocean", None),
+        ("ocean temp", None), ("sea temperature", None), ("rekor sıcaklık", None),
+        ("okyanus", ["sıcaklık", "rekor"]), ("baseline shift", None),
+        ("atlantic currents", None), ("algae bloom", None),
+        ("coral reef", ["declin", "loss", "bleach", "record"]),
+        ("algae boom", None), ("algal bloom", ["ocean", "global", "world"]),
+        ("atlantic current", None), ("amoc", None), ("overturning circulation", None),
+        ("zettajoule*", None), ("sea level", ["rise", "rising", "record"]),
+        ("海洋", ["升温", "变暖", "热含量", "酸化"]), ("海水温", None), ("해양", ["온난화", "수온"]),
+        ("oceano", ["aquecimento", "recorde"]), ("océano", ["calentamiento", "récord"]),
+        ("المحيط", ["احترار", "ارتفاع"]), ("laut", ["pemanasan", "suhu"]),
+        ("珊瑚礁", None), ("サンゴ礁", None), ("recifes de coral", None), ("arrecifes de coral", None),
+    ],
+    "climate": [
+        ("calor extremo", None), ("seca", ["escala global", "recorde", "severa"]),
+        ("極端高溫", None), ("极端天气", None), ("气候变暖", None), ("氣候變遷", None),
+        ("超级厄尔尼诺", None), ("el niño", ["record", "strong", "global"]),
+        ("copernicus", None), ("climate breakdown", None), ("climate crisis", None),
+        ("cyclone*", ["severity", "forecast", "intensif"]), ("wildfire*", ["study", "increase", "%"]),
+        ("iklim", ["krisis", "perubahan"]), ("مناخ", ["أزمة", "تغير"]),
+        ("기후", ["위기", "변화"]), ("気候", ["危機", "変動"]),
+    ],
+    "freshwater": [
+        ("lake*", ["oxygen", "global", "world", "declin", "shrink"]), ("湖泊", None),
+        ("氧收支", None), ("river", ["dries", "record low", "shrink", "drying"]),
+        ("se seca", None), ("niveles récord", ["río", "seca"]), ("glacier*", ["loss", "retreat", "melt"]),
+        ("groundwater", ["global", "declin", "depletion"]), ("水资源", None),
+        ("河流", ["干涸", "枯水"]), ("منسوب المياه", None),
+    ],
+    "forest": [
+        ("mangrove*", None), ("hutan bakau", None), ("红树林", None),
+        ("carbon sink", ["forest", "weaken", "declin"]), ("吸碳", None), ("森林", ["碳汇", "退化", "消失"]),
+        ("desertification", None), ("التصحر", None), ("desertificación", None), ("desertificação", None),
+        ("land degradation", None), ("تدهور الأراضي", None), ("degradação da terra", None),
+        ("土地退化", None), ("nature-based solution*", None), ("自然解方", None),
+        ("tipping point", ["amazon", "forest", "ecosystem"]), ("临界点", None),
+    ],
+    "biodiversity": [
+        ("vertebrate*", ["diversity", "global", "declin"]), ("脊椎动物", None), ("生物多样性", None),
+        ("species", ["global", "declin", "loss", "worldwide", "extinct"]),
+        ("生物多様性", None), ("생물다양성", None), ("biodiversidade", None), ("biodiversidad", None),
+        ("التنوع البيولوجي", None), ("keanekaragaman hayati", None),
+    ],
+    "accountability": [
+        ("climate finance", None), ("気候ファイナンス", None), ("financement climatique", None),
+        ("financiación climática", None), ("التمويل المناخي", None), ("气候融资", None),
+        ("regional fund", ["climate", "pacific", "loss and damage"]), ("cop31", None), ("cop30", None),
+        ("sues", ["administration", "government", "agency"]), ("提訴", None),
+        ("global plan", ["fao", "reduce", "first"]), ("piano globale", None),
+    ],
+    "energy": [
+        ("clean energy investment", None), ("grid*", ["fragile", "clean energy", "investment"]),
+        ("renewable*", ["investment", "global", "record"]),
+    ],
+    "health": [
+        ("infectious disease", ["climate", "spread", "risk", "global"]),
+        ("传染病", ["气候", "传播"]), ("vector-borne", None),
+    ],
+    "food": [
+        ("food inflation", None), ("食品通胀", None), ("crop", ["global", "record", "yields", "wheat", "maize"]),
+        ("农产品", None), ("global supplies", None), ("食料", ["供給", "危機"]),
+    ],
+}
+
+for _tid, _label, _terms in TOPICS:
+    _terms.extend(LOCAL_TERMS.get(_tid, []))
+
+# ------------------------------------------------------------------
+# Subjects this wire had a name for and never asked about.
+#
+# The terms below were already here and were well written; what was
+# missing was any query aimed at them, so they held zero stories
+# however much the world published. These are the phrases from the
+# queries now added, so what is fetched can be filed.
+# ------------------------------------------------------------------
+FILL_TERMS = {
+    "extraction": [
+        ("demanda global de", None), ("demande mondiale de", None),
+        ("estudio mundial sobre", None), ("estudo mundial sobre", None),
+        ("globale nachfrage kritische", None), ("procura global de", None),
+        ("weltweite studie bergbauausweitung", None), ("étude mondiale sur", None),
+        ("глобальное исследование расширения", None), ("мировой спрос на", None),
+        ("世界 鉱山開発 拡大", None), ("全球 采矿 扩张", None),
+        ("关键矿产 全球需求", None), ("重要鉱物 世界需要", None),
+    ],
+    "pollution": [
+        ("décès dus à", None), ("estudio mundial sobre", None),
+        ("estudo mundial sobre", None), ("globale todesfälle durch", None),
+        ("mortes por poluição", None), ("muertes por contaminación", None),
+        ("weltweite studie plastikverschmutzung", None), ("étude mondiale sur", None),
+        ("глобальное исследование пластикового", None), ("смертность от загрязнения", None),
+        ("دراسة عالمية عن", None), ("وفيات تلوث الهواء", None),
+        ("世界 プラスチック汚染 研究", None), ("全球 塑料污染 研究", None),
+        ("大気汚染 死亡 世界推計", None), ("空气污染 死亡 全球估算", None),
+    ],
+}
+
+for _tid, _label, _terms in TOPICS:
+    _terms.extend(FILL_TERMS.get(_tid, []))
+
+
+# --------------------------------------------------------------------------
+# The same subjects in the languages this wire's own queries ask in, derived
+# from those queries and filed under the subject each query's label names. The
+# gate above was written in English; the queries were translated and it was
+# not, so three quarters of what the wire fetched could not be recognised once
+# it arrived. Generated — edit topics_multilingual.json, or delete the file to
+# turn this off.
+# --------------------------------------------------------------------------
+_EXTRA_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                           "topics_multilingual.json")
+if os.path.exists(_EXTRA_PATH):
+    with open(_EXTRA_PATH, encoding="utf-8") as _fh:
+        _EXTRA = json.load(_fh)
+    TOPICS = [(tid, label, terms + [(t, g) for t, g in _EXTRA.get(tid, [])])
+              for tid, label, terms in TOPICS]
+
 TOPICS_C = [(tid, label, [(_compile(t), _compile_all(g) if g else None) for t, g in terms])
             for tid, label, terms in TOPICS]
 GEO3_C = [(rid, rlabel, [(sid, slabel, [(pid, plabel, _compile_all(terms))
@@ -1075,19 +1275,91 @@ def scene_first(text, places):
         (scene if _is_scene(text, _first_pos(text, terms.get(pid, []))) else rest).append(pid)
     return scene + rest
 
-def point_for(text, places, subs, regions):
-    """The most specific point a story resolved to: a named sub-national place
-    if there is one, otherwise the country, otherwise the subregion or region.
-    Returns (label_or_None, point_or_None)."""
+
+# --------------------------------------------------------------------------
+# The gazetteer answers with a country; this wire's taxonomy is keyed on ids
+# whose leading token is that country's ISO-2. Filing a placed story under its
+# region is therefore a lookup, not a guess. Where a country is split across
+# several places, only region and subregion are filled: which of the places a
+# story belongs to is a question the country code cannot answer.
+# --------------------------------------------------------------------------
+ISO_REGION = {}
+for _rid, _rlabel, _subs in GEO3:
+    for _sid, _slabel, _places in _subs:
+        for _pid, _plabel, _terms in _places:
+            _iso = _pid.split("-")[0].lower()
+            if len(_iso) == 2:
+                ISO_REGION.setdefault(_iso, (_rid, _sid))
+
+
+def file_by_country(row, cc):
+    """Put a gazetteer-placed story in its region, if the wire has one."""
+    if not cc:
+        return
+    hit = ISO_REGION.get(str(cc).lower())
+    if not hit:
+        return
+    rid, sid = hit
+    if not row.get("w") or row["w"] == ["unlocated"]:
+        row["w"] = [rid]
+    if not row.get("sr") or row["sr"] == ["unlocated"]:
+        row["sr"] = [sid]
+
+
+
+def country_for(raw, locale=None):
+    """The ISO-2 the placement resolved to, or None."""
+    if not _GAZETTEER:
+        return None
+    try:
+        return galaxy_places.resolve_full(raw, locale)[4]
+    except Exception:
+        return None
+
+
+def point_for(text, places, subs, regions, locale=None, raw=None):
+    """The most specific point a story resolved to.
+
+    The order is deliberate. This wire's own curated table goes first: it holds
+    the places this subject actually turns up and the country list it was
+    written against, and it beats a general gazetteer on its own ground. The
+    shared gazetteer follows but only overrides at the settlement level, so a
+    headline naming Kharkiv pins on Kharkiv rather than the middle of Ukraine,
+    while a country reading from this wire's own table still wins over a
+    country reading from the gazetteer. Then the bodies that stand for a
+    jurisdiction without naming it — EFSA is a European story, ANVISA a
+    Brazilian one. Last, and weakest, the country the source itself reports
+    from.
+
+    Returns (label_or_None, point_or_None, approx). approx is True only for
+    that last case, where nothing in the story placed it and the point is the
+    reporting locale rather than the scene. The page draws those hollow.
+    """
     label, point = precise_for(text)
     if point:
-        return label, point
+        return label, point, False
+
+    glabel, gpoint, grank = None, None, -1
+    if _GAZETTEER:
+        glabel, gpoint, grank, _approx = galaxy_places.resolve_ranked(raw or text)
+        if grank == 3:
+            return glabel, gpoint, False
+
     places = scene_first(text, places)
     for level in (places, subs, regions):
         for pid in level:
             if pid in COORDS:
-                return None, COORDS[pid]
-    return None, None
+                return None, COORDS[pid], False
+
+    if gpoint:
+        return glabel, gpoint, False
+
+    if _GAZETTEER and locale:
+        llabel, lpoint, _lrank, lapprox = galaxy_places.resolve_ranked("", locale)
+        if lpoint:
+            return llabel, lpoint, lapprox
+
+    return None, None, False
 
 
 def load_sources():
@@ -1104,12 +1376,15 @@ def load_sources():
         for loc in cfg.get(block, []):
             srcs.append({"name": prefix + loc["label"], "lang": loc["lang"],
                          "region": group, "kind": kind,
-                         "url": build_gnews_url(loc)})
+                         "url": build_gnews_url(loc), "gl": loc.get("gl")})
     return srcs, cfg
 
 
 def run(dry_run=False, fixtures=None):
+    global DEADLINE
     sources, cfg = load_sources()
+    if not fixtures:
+        DEADLINE = time.monotonic() + READ_BUDGET_MIN * 60
     print("Reading %d wires…" % len(sources))
 
     def read(src):
@@ -1146,10 +1421,10 @@ def run(dry_run=False, fixtures=None):
         items.append(row)
         return True
 
-    stats, ok_count, seen_but_small = [], 0, 0
+    stats, ok_count, seen_but_small, refused = [], 0, 0, 0
     for src, raw in results:
         stat = {"name": src["name"], "lang": src["lang"], "region": src["region"],
-                "kept": 0, "small": 0, "ok": False}
+                "kept": 0, "small": 0, "refused": 0, "ok": False}
         if raw:
             stat["ok"] = True
             ok_count += 1
@@ -1162,11 +1437,24 @@ def run(dry_run=False, fixtures=None):
                     stat["small"] += 1
                     seen_but_small += 1
                     continue
-                row["x"] = topics_for(text) or ["climate"]
+                # No silent default. This read `or ["climate"]`, which filed 87
+                # of 146 stories under a subject none had matched — and made
+                # this wire look far more climate-weighted than it is.
+                subjects = topics_for(text)
+                if not subjects:
+                    stat["refused"] += 1
+                    refused += 1
+                    continue
+                row["x"] = subjects
                 row["p"] = total
                 row["y"] = reasons
                 row["w"], row["sr"], row["pl"] = places_for(text)
-                row["pn"], row["ll"] = point_for(text, row["pl"], row["sr"], row["w"])
+                row["gl"] = src.get("gl")
+                _raw = (row["t"] or "") + " " + (row.get("s") or "")
+                row["pn"], row["ll"], row["pa"] = point_for(
+                    text, row["pl"], row["sr"], row["w"], src.get("gl"), _raw)
+                if row["ll"]:
+                    file_by_country(row, country_for(_raw, src.get("gl")))
                 if absorb(row):
                     stat["kept"] += 1
         stats.append(stat)
@@ -1176,8 +1464,23 @@ def run(dry_run=False, fixtures=None):
 
     fresh_urls = {canon_url(i["u"]) for i in items}
     for row in previous:
-        if "x" in row:
-            absorb(row)
+        if "x" not in row:
+            continue
+        # A retained story is placed again rather than carried forward with the
+        # answer it happened to get the day it was first read. RETAIN_DAYS is
+        # 45, so without this a change to the placement layer takes a month and
+        # a half to reach the map, and a story never re-fetched keeps its first
+        # answer for good. Rows already holding a point resolved from their own
+        # text are left alone; only the unplaced and the source-country
+        # approximations are reconsidered.
+        if not row.get("ll") or row.get("pa"):
+            _raw = ((row.get("t") or "") + " " + (row.get("s") or ""))
+            row["pn"], row["ll"], row["pa"] = point_for(
+                _raw.lower(), row.get("pl") or [], row.get("sr") or [],
+                row.get("w") or [], row.get("gl"), _raw)
+            if row["ll"]:
+                file_by_country(row, country_for(_raw, row.get("gl")))
+        absorb(row)
 
     cutoff = int(time.time() * 1000) - RETAIN_DAYS * 86400000
     items = [i for i in items if (i.get("d") or cutoff + 1) >= cutoff]
