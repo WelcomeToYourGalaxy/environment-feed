@@ -1,0 +1,76 @@
+name: Harvest the environment wire
+
+on:
+  schedule:
+    - cron: "41 */2 * * *"     # every two hours, at :41
+  workflow_dispatch:            # run by hand from the Actions tab
+  push:
+    paths:
+      - "harvest_env.py"
+      - "sources_env.json"
+      - ".github/workflows/harvest-env.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: harvest-env
+  cancel-in-progress: true
+
+jobs:
+  harvest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Read every wire and write wire_env.json
+        run: python3 harvest_env.py
+
+      - name: Commit if the feed changed
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          BRANCH="${GITHUB_REF_NAME}"
+          WIRE="wire_env.json"
+          cp "$WIRE" /tmp/harvested.json
+
+          # The wire is regenerated whole on every run, so there is nothing in
+          # it to merge. A `git pull --rebase` here has two complete versions of
+          # one line of JSON and conflicts every time main has moved — and since
+          # GitHub runs this block under `bash -e`, that failure aborted the
+          # step before the retry loop it was written for could run. Take the
+          # remote, put our harvest back on top of it, and push again.
+          commit_wire() {
+            cp /tmp/harvested.json "$WIRE"
+            git add "$WIRE"
+            if git diff --cached --quiet; then
+              return 1
+            fi
+            COUNT=$(python3 -c "import json;d=json.load(open('wire_env.json'));print(str(d['counts']['stories'])+' stories, '+str(d['counts']['big_picture'])+' planetary')")
+            git commit -m "wire: $COUNT ($(date -u '+%Y-%m-%d %H:%M UTC'))"
+            return 0
+          }
+
+          if ! commit_wire; then
+            echo "No change to $WIRE"
+            exit 0
+          fi
+
+          for attempt in 1 2 3 4 5; do
+            if git push; then
+              echo "Pushed on attempt $attempt"
+              exit 0
+            fi
+            echo "Push rejected — main moved. Taking the remote and re-applying the harvest (attempt $attempt)."
+            git fetch origin "$BRANCH"
+            git reset --hard "origin/$BRANCH"
+            commit_wire || { echo "Remote already has this wire"; exit 0; }
+            sleep $((attempt * 5))
+          done
+          echo "Could not push after five attempts."
+          exit 1
